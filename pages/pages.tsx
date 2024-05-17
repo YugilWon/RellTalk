@@ -6,7 +6,7 @@ import axios from "axios";
 import { moviesState } from "../components/moviesState";
 // import YoutubePlayer from "./youtube";
 import { Movie } from "../(types)/interface";
-const API_KEY = "2fd693cc1067a4b5771c2c8b4a2e72c8";
+const API_KEY = process.env.NEXT_PUBLIC_APIKEY;
 
 const MoviePage = () => {
   const [movies, setMovies] = useRecoilState<Movie[]>(moviesState);

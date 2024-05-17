@@ -1,11 +1,11 @@
 import React from "react";
 import MoviePage from "../pages/pages";
-// import YoutubePlayer from "../pages/youtube";
+import YoutubePlayer from "../pages/youtube";
 
 export default function MainPage() {
   return (
     <>
-      {/* <YoutubePlayer /> */}
+      <YoutubePlayer />
       <MoviePage />
     </>
   );
