@@ -36,24 +36,24 @@ const MoviePage = () => {
 
   return (
     <div>
-      <h1>Popular Movies</h1>
-
-      <ul>
+      <h1 className="text-2xl font-bold mb-6 text-center">Popular Movies</h1>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {movies.map((movie, index) => (
-          <>
-            <>{/* <YoutubePlayer /> */}</>
-            <li key={index}>{movie.title}</li>
-            <li key={index}>{movie.overview}</li>
-            {/* <li key={index}>{movie.id}</li> */}
-
+          <li
+            key={index}
+            className="relative bg-white shadow-md rounded-lg overflow-hidden group"
+          >
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
-              alt="Backdrop"
+              alt={movie.title}
+              className="w-full h-48 object-cover"
             />
-            <br />
-            <br />
-            <br />
-          </>
+            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+              <h2 className="text-lg font-semibold text-white text-center">
+                {movie.title}
+              </h2>
+            </div>
+          </li>
         ))}
       </ul>
     </div>
