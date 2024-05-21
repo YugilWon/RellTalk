@@ -38,9 +38,9 @@ const DetailPage = () => {
   }
 
   return (
-    <div>
+    <div className="bg-black text-white">
       <h1>{movie.title}</h1>
-      <p>{movie.overview}</p>
+      <p className="text-white">{movie.overview}</p>
       <img
         src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
         alt={movie.title}
@@ -51,8 +51,6 @@ const DetailPage = () => {
 
 const DetailPageWrapper = () => (
   <RecoilRoot>
-    {" "}
-    {/* RecoilRoot 추가 */}
     <DetailPage />
   </RecoilRoot>
 );
