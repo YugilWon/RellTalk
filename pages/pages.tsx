@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 import { moviesState } from "../components/moviesState";
-// import YoutubePlayer from "./youtube";
+import Link from "next/link";
 import { Movie } from "../(types)/interface";
 const API_KEY = process.env.NEXT_PUBLIC_APIKEY;
 
@@ -19,7 +19,6 @@ const MoviePage = () => {
         try {
           const response = await axios.get(
             `https://api.themoviedb.org/3/movie/popular?language=ko&api_key=${API_KEY}&page=${page}`
-            // `https://api.themoviedb.org/3/movie/now_playing?language=ko&api_key=${API_KEY}&page=${page}`
           );
           const pageMovies = response.data.results;
           allMovies = [...allMovies, ...pageMovies];
@@ -36,23 +35,27 @@ const MoviePage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6 text-center">Popular Movies</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center text-white">
+        Popular Movies
+      </h1>
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {movies.map((movie, index) => (
           <li
             key={index}
-            className="relative bg-white shadow-md rounded-lg overflow-hidden group"
+            className="relative bg-white shadow-md rounded-lg overflow-hidden group cursor-pointer"
           >
-            <img
-              src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
-              alt={movie.title}
-              className="w-full h-48 object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center">
-              <h2 className="text-lg font-semibold text-white text-center">
-                {movie.title}
-              </h2>
-            </div>
+            <Link href={`/detail/${movie.id}`}>
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+                alt={movie.title}
+                className="w-full h-48 object-cover"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                <h2 className="text-lg font-semibold text-white text-center">
+                  {movie.title}
+                </h2>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>

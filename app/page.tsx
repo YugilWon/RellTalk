@@ -1,12 +1,16 @@
+"use client";
 import React from "react";
+import { RecoilRoot } from "recoil";
 import MoviePage from "../pages/pages";
 import YoutubePlayer from "../pages/youtube";
 
 export default function MainPage() {
   return (
-    <>
-      <YoutubePlayer />
-      <MoviePage />
-    </>
+    <RecoilRoot>
+      <>
+        <YoutubePlayer />
+        <MoviePage />
+      </>
+    </RecoilRoot>
   );
 }

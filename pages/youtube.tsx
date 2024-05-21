@@ -16,15 +16,16 @@ const YoutubePlayer = () => {
 
     window.onYouTubeIframeAPIReady = () => {
       let player = new window.YT.Player("youtube-player", {
-        height: "360",
+        height: "720",
         width: "100%",
         videoId: "TcMBFSGVi1c",
         playerVars: {
           autoplay: 1,
           controls: 1,
           modestbranding: 1,
-          rel: 0,
+          rel: 1,
           showinfo: 0,
+          mute: 1,
         },
         events: {},
       });
@@ -33,7 +34,7 @@ const YoutubePlayer = () => {
 
   return (
     <div className="flex justify-center bg-black py-8">
-      <div id="youtube-player" className="w-full max-w-4xl"></div>
+      <div id="youtube-player" className="w-full"></div>
     </div>
   );
 };
