@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { moviesState } from "@/components/moviesState";
 import { Movie } from "@/(types)/interface";
+import HomeLink from "@/components/homeLink";
 
 const DetailPage = () => {
   const router = useRouter();
@@ -38,9 +39,10 @@ const DetailPage = () => {
   }
 
   return (
-    <div className="bg-black text-white">
+    <div>
+      <HomeLink />
       <h1>{movie.title}</h1>
-      <p className="text-white">{movie.overview}</p>
+      <p>{movie.overview}</p>
       <img
         src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
         alt={movie.title}

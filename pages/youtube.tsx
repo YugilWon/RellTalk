@@ -14,21 +14,32 @@ const YoutubePlayer = () => {
     const firstScriptTag = document.getElementsByTagName("script")[0];
     firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
+    let player: any;
+
     window.onYouTubeIframeAPIReady = () => {
-      let player = new window.YT.Player("youtube-player", {
+      player = new window.YT.Player("youtube-player", {
         height: "720",
         width: "100%",
-        videoId: "TcMBFSGVi1c",
+        videoId: "IwZtD0XB7JQ",
         playerVars: {
           autoplay: 1,
           controls: 1,
           modestbranding: 1,
           rel: 1,
           showinfo: 0,
-          mute: 1,
+          mute: 0,
         },
-        events: {},
+        events: {
+          onStateChange: onPlayerStateChange,
+        },
       });
+    };
+
+    const onPlayerStateChange = (event: any) => {
+      if (event.data === window.YT.PlayerState.ENDED) {
+        player.seekTo(0);
+        player.playVideo();
+      }
     };
   }, []);
 
