@@ -1,13 +1,12 @@
 "use client";
 import React from "react";
-import MoviePage from "../pages/pages";
-import YoutubePlayer from "../pages/youtube";
+
+import SideBar from "@/components/sideBar";
 
 export default function MainPage() {
   return (
     <>
-      <YoutubePlayer />
-      <MoviePage />
+      <SideBar />
     </>
   );
 }

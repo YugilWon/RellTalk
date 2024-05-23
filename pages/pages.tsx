@@ -6,6 +6,7 @@ import axios from "axios";
 import { moviesState } from "../components/moviesState";
 import Link from "next/link";
 import { Movie } from "../(types)/interface";
+
 const API_KEY = process.env.NEXT_PUBLIC_APIKEY;
 
 const MoviePage = () => {

@@ -1,5 +1,5 @@
 "use client";
-
+import "../../app/globals.css";
 import React, { useEffect, useState } from "react";
 import { RecoilRoot, useRecoilValue } from "recoil";
 import { useRouter } from "next/router";
@@ -39,15 +39,25 @@ const DetailPage = () => {
   }
 
   return (
-    <div>
+    <>
       <HomeLink />
-      <h1>{movie.title}</h1>
-      <p>{movie.overview}</p>
-      <img
-        src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
-        alt={movie.title}
-      />
-    </div>
+
+      <div className="p-4 max-w-screen-lg mx-auto w-600 h-400 bg bg-blend-color mt-60 bg-gray-400">
+        <div className="flex justify-center items-center">
+          <img
+            className="w-1/3 mr-4"
+            src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+            alt={movie.title}
+          />
+          <div>
+            <h1 className="text-2xl font-bold text-white mb-2">
+              {movie.title}
+            </h1>
+            <p className="text-white">{movie.overview}</p>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

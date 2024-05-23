@@ -5,7 +5,7 @@ const HomeLink = () => {
   return (
     <Link href="/">
       <div>
-        <img src="/logo.png" alt="홈화면으로" />
+        <h1 className="text-white">홈으로</h1>
       </div>
     </Link>
   );
