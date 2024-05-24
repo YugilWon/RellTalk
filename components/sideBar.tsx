@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import YoutubePlayer from "../pages/youtube";
 import MoviePage from "../pages/pages";
+import Login from "./logIn";
 
 const SideBar = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -15,8 +16,9 @@ const SideBar = () => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="p-4 cursor-pointer">
-          {isHovered ? "SideBar Name" : "T"}
+        <div className="p-4 cursor-pointer flex items-center justify-between">
+          <span>{isHovered ? "SideBar Name" : "->"}</span>
+          {isHovered && <Login />}
         </div>
         <div
           className={`transition-opacity duration-300 ${
