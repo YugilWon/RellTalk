@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import axios from "axios";
-import { moviesState } from "../components/moviesState";
+import { moviesState } from "@/components/recoil/recoilState";
 import Link from "next/link";
 import { Movie } from "../(types)/interface";
 

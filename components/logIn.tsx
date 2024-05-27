@@ -1,11 +1,11 @@
-"use client";
-
 import React, { useState } from "react";
 import LoginModal from "./loginModal";
+import { useRecoilState } from "recoil";
+import { isLoggedInState } from "./recoil/recoilState";
 
 const Login = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
   const handleLoginLogout = () => {
     if (isLoggedIn) {
@@ -19,6 +19,10 @@ const Login = () => {
     setIsModalOpen(false);
   };
 
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+  };
+
   return (
     <div>
       <button
@@ -27,7 +31,12 @@ const Login = () => {
       >
         {isLoggedIn ? "로그아웃" : "로그인"}
       </button>
-      {isModalOpen && <LoginModal onClose={handleModalClose} />}
+      {isModalOpen && (
+        <LoginModal
+          onClose={handleModalClose}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
     </div>
   );
 };

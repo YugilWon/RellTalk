@@ -3,9 +3,12 @@ import React, { useState } from "react";
 import YoutubePlayer from "../pages/youtube";
 import MoviePage from "../pages/pages";
 import Login from "./logIn";
+import { useRecoilState } from "recoil";
+import { isLoggedInState } from "./recoil/recoilState";
 
 const SideBar = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
   return (
     <div className="flex">

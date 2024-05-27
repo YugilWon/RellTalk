@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import {
   auth,
@@ -6,7 +7,13 @@ import {
   signInWithPopup,
 } from "./fireBase";
 
-const LoginModal = ({ onClose }: { onClose: () => void }) => {
+const LoginModal = ({
+  onClose,
+  onLoginSuccess,
+}: {
+  onClose: () => void;
+  onLoginSuccess: () => void;
+}) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +22,9 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      onClose();
+      console.log("Email login successful");
+      onLoginSuccess();
+      // onClose();
     } catch (error) {
       setError(error.message);
       console.error("로그인 에러:", error.message);
@@ -26,7 +35,9 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      onClose(); // 모달 닫기
+      console.log("Google login successful");
+      onLoginSuccess();
+      // onClose();
     } catch (error) {
       setError(error.message);
       console.error("Google 로그인 에러:", error.message);
@@ -73,7 +84,7 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
         </form>
         <button
           onClick={handleGoogleLogin}
-          className="w-full bg-red-500 text-white py-2 rounded"
+          className="w-full bg-red-500 text-white py-2 rounded mt-2"
         >
           구글로 로그인
         </button>
