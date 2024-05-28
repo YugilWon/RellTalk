@@ -34,10 +34,26 @@ const LoginModal = ({
   const handleGoogleLogin = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      console.log("Google login successful");
-      onLoginSuccess();
-      // onClose();
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // 서버로 사용자 정보 전송
+      const response = await fetch("http://localhost:3000/google/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: user.email }), // 올바른 데이터를 보내는지 확인
+      });
+
+      if (response.ok) {
+        // 서버에서 받은 토큰을 로컬 스토리지에 저장
+        const data = await response.json();
+        localStorage.setItem("token", data.token);
+        onLoginSuccess();
+      } else {
+        throw new Error("Failed to login with Google");
+      }
     } catch (error) {
       setError(error.message);
       console.error("Google 로그인 에러:", error.message);

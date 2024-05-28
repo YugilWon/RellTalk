@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import YoutubePlayer from "../pages/youtube";
+import YoutubePlayer from "./youtube";
 import MoviePage from "../pages/pages";
 import Login from "./logIn";
 import { useRecoilState } from "recoil";
