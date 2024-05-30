@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { RecoilRoot, useRecoilValue } from "recoil";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { moviesState } from "@/components/recoil/moviesState";
+import { moviesState } from "@/components/recoil/recoilState";
 import { Movie } from "@/(types)/interface";
 import HomeLink from "@/components/homeLink";
 

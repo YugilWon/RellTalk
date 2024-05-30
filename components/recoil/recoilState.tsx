@@ -10,3 +10,13 @@ export const isLoggedInState = atom({
   key: "isLoggedInState",
   default: false,
 });
+
+export const tokenState = atom({
+  key: "tokenState",
+  default: null,
+});
+
+export const tokenExpiryAlertState = atom({
+  key: "tokenExpiryAlertState",
+  default: false,
+});

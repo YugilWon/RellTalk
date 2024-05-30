@@ -21,10 +21,14 @@ const LoginModal = ({
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log("Email login successful");
-      onLoginSuccess();
-      // onClose();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const token = await userCredential.user.getIdToken();
+      onLoginSuccess(token);
+      onClose();
     } catch (error) {
       setError(error.message);
       console.error("로그인 에러:", error.message);
@@ -37,20 +41,18 @@ const LoginModal = ({
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // 서버로 사용자 정보 전송
       const response = await fetch("http://localhost:3000/google/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: user.email }), // 올바른 데이터를 보내는지 확인
+        body: JSON.stringify({ email: user.email }),
       });
 
       if (response.ok) {
-        // 서버에서 받은 토큰을 로컬 스토리지에 저장
         const data = await response.json();
         localStorage.setItem("token", data.token);
-        onLoginSuccess();
+        onLoginSuccess(data.token);
       } else {
         throw new Error("Failed to login with Google");
       }
@@ -61,7 +63,7 @@ const LoginModal = ({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-gray-100 p-6 rounded shadow-lg relative">
         <button
           className="absolute top-2 right-2 text-gray-700"
