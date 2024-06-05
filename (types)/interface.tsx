@@ -4,3 +4,8 @@ export type Movie = {
   overview: string;
   backdrop_path: string;
 };
+
+export type JWTPayload = {
+  exp: number;
+  [key: string]: any;
+};

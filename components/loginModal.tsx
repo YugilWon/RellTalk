@@ -12,7 +12,7 @@ const LoginModal = ({
   onLoginSuccess,
 }: {
   onClose: () => void;
-  onLoginSuccess: () => void;
+  onLoginSuccess: (token: string) => void;
 }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -29,7 +29,7 @@ const LoginModal = ({
       const token = await userCredential.user.getIdToken();
       onLoginSuccess(token);
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       setError(error.message);
       console.error("로그인 에러:", error.message);
     }
@@ -56,7 +56,7 @@ const LoginModal = ({
       } else {
         throw new Error("Failed to login with Google");
       }
-    } catch (error) {
+    } catch (error: any) {
       setError(error.message);
       console.error("Google 로그인 에러:", error.message);
     }

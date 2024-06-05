@@ -20,3 +20,8 @@ export const tokenExpiryAlertState = atom({
   key: "tokenExpiryAlertState",
   default: false,
 });
+
+export const isHoveredState = atom({
+  key: "isHoveredState",
+  default: false,
+});

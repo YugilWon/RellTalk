@@ -9,8 +9,6 @@ const PORT = 3000;
 const SECRET_KEY = "testkey";
 const TOKEN_EXPIRATION = "1m";
 
-console.log("시크릿 키야", SECRET_KEY);
-
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -26,7 +24,6 @@ app.post("/google/login", (req, res) => {
   const { email } = req.body;
 
   const user = users.find((user) => user.email === email);
-  console.log("들어온 데이터야", email);
 
   if (!user) {
     return res.status(401).send("Unauthorized");

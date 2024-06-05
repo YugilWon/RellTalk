@@ -4,10 +4,10 @@ import YoutubePlayer from "./youtube";
 import MoviePage from "../pages/pages";
 import Login from "./logIn";
 import { useRecoilState } from "recoil";
-import { isLoggedInState } from "./recoil/recoilState";
+import { isLoggedInState, isHoveredState } from "./recoil/recoilState";
 
 const SideBar = () => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useRecoilState(isHoveredState);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
   return (
@@ -34,15 +34,6 @@ const SideBar = () => {
             <li className="p-2 hover:bg-gray-600">고객센터</li>
           </ul>
         </div>
-      </div>
-
-      <div
-        className={`flex-1 transition-margin duration-300 ${
-          isHovered ? "ml-64" : "ml-16"
-        } p-4`}
-      >
-        <YoutubePlayer />
-        <MoviePage />
       </div>
     </div>
   );

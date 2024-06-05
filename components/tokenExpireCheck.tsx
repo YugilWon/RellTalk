@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { isLoggedInState, tokenState } from "./recoil/recoilState";
 import jwt from "jsonwebtoken";
+import { JWTPayload } from "@/(types)/interface";
 
 const useTokenExpiryCheck = () => {
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
@@ -11,7 +12,7 @@ const useTokenExpiryCheck = () => {
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
-      const decodedToken = jwt.decode(savedToken);
+      const decodedToken = jwt.decode(savedToken) as JWTPayload | null;
       if (decodedToken && decodedToken.exp * 1000 > Date.now()) {
         setToken(savedToken);
         setIsLoggedIn(true);
@@ -27,14 +28,14 @@ const useTokenExpiryCheck = () => {
 
       if (token) {
         try {
-          const decodedToken = jwt.decode(token);
+          const decodedToken = jwt.decode(token) as JWTPayload | null;
 
           if (decodedToken && decodedToken.exp * 1000 <= Date.now()) {
             localStorage.removeItem("token");
             setIsLoggedIn(false);
             setTokenExpiryAlert(true);
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error("토큰 디코딩 에러:", error.message);
           localStorage.removeItem("token");
           setIsLoggedIn(false);
@@ -58,7 +59,7 @@ const useTokenExpiryCheck = () => {
   return { tokenExpiryAlert, handleAlertClose };
 };
 
-const TokenExpiryAlert = ({ onClose }) => {
+const TokenExpiryAlert = ({ onClose }: { onClose: () => void }) => {
   return (
     <div
       onClick={onClose}
