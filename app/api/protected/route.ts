@@ -1,4 +1,3 @@
-// app/api/protected/route.ts
 import { NextResponse } from "next/server";
 import { authenticateToken } from "@/app/lib/auth";
 

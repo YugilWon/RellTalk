@@ -1,19 +1,19 @@
-// // src/lib/auth.ts
-// import jwt from "jsonwebtoken";
-// import { cookies } from "next/headers";
+// src/lib/auth.ts
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
-// const SECRET_KEY = process.env.JWT_SECRET!;
+const SECRET_KEY = process.env.JWT_SECRET!;
 
-// export function authenticateToken() {
-//   const token = cookies().get("accessToken")?.value;
+export function authenticateToken() {
+  const token = cookies().get("accessToken")?.value;
 
-//   if (!token) {
-//     throw new Error("NO_TOKEN");
-//   }
+  if (!token) {
+    throw new Error("NO_TOKEN");
+  }
 
-//   try {
-//     return jwt.verify(token, SECRET_KEY);
-//   } catch {
-//     throw new Error("INVALID_TOKEN");
-//   }
-// }
+  try {
+    return jwt.verify(token, SECRET_KEY);
+  } catch {
+    throw new Error("INVALID_TOKEN");
+  }
+}
