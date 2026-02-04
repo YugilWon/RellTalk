@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 
 const API_KEY = process.env.NEXT_PUBLIC_APIKEY;
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
     if (!query) {
       return NextResponse.json(
         { message: "검색어가 없습니다." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -20,25 +21,25 @@ export async function GET(request: Request) {
     if (!trimmedQuery) {
       return NextResponse.json(
         { message: "유효한 검색어를 입력하세요." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // TMDB 검색 API 호출
     const res = await fetch(
       `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=ko&query=${encodeURIComponent(
-        trimmedQuery
+        trimmedQuery,
       )}&include_adult=false`,
       {
         // 검색 결과는 실시간성이 중요 → 캐시 X
         cache: "no-store",
-      }
+      },
     );
 
     if (!res.ok) {
       return NextResponse.json(
         { message: "TMDB 검색 실패" },
-        { status: res.status }
+        { status: res.status },
       );
     }
 
