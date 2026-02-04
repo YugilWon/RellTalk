@@ -93,41 +93,39 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60">
-      <div className="bg-gray-100 p-6 rounded shadow-lg relative w-96 z-[10000]">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 sm:p-0">
+      <div className="bg-gray-100 rounded shadow-lg w-full max-w-md sm:w-96 p-6 sm:p-8 relative overflow-y-auto max-h-[90vh]">
         <button
-          className="absolute top-2 right-2 text-gray-700"
+          className="absolute top-3 right-3 text-gray-700 text-xl sm:text-2xl"
           onClick={onClose}
         >
           &times;
         </button>
 
-        <h2 className="text-2xl mb-4 text-black">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-center">
           {mode === "login" ? "로그인" : "회원가입"}
         </h2>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-3">
           {mode === "signup" && (
             <>
               {/* 프로필 이미지 */}
               <label
                 htmlFor="avatar-upload"
-                className="flex flex-col items-center justify-center w-24 h-24 mx-auto mb-4 rounded-full border border-dashed cursor-pointer hover:bg-gray-50"
+                className="flex flex-col items-center justify-center w-24 h-24 mx-auto mb-4 rounded-full border border-dashed cursor-pointer hover:bg-gray-50 overflow-hidden"
               >
                 {previewUrl ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
                     src={previewUrl}
                     alt="프로필 이미지 미리보기"
-                    className="w-full h-full rounded-full object-cover"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
-                  <>
-                    <span className="text-sm text-gray-500">프로필 이미지</span>
-                    <span className="text-xs text-gray-400">
-                      클릭해서 업로드
-                    </span>
-                  </>
+                  <div className="flex flex-col items-center justify-center text-center text-gray-500 text-xs sm:text-sm">
+                    <span>프로필 이미지</span>
+                    <span>클릭해서 업로드</span>
+                  </div>
                 )}
 
                 <input
@@ -144,7 +142,7 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
               <input
                 type="text"
                 placeholder="닉네임"
-                className="w-full mb-2 p-2 border"
+                className="w-full p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 disabled={loading}
@@ -153,31 +151,34 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
             </>
           )}
 
+          {/* 이메일 */}
           <input
             type="email"
             placeholder="이메일"
-            className="w-full mb-2 p-2 border"
+            className="w-full p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
             required
           />
 
+          {/* 비밀번호 */}
           <input
             type="password"
             placeholder="비밀번호"
-            className="w-full mb-2 p-2 border"
+            className="w-full p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
             required
           />
 
+          {/* 비밀번호 확인 */}
           {mode === "signup" && (
             <input
               type="password"
               placeholder="비밀번호 확인"
-              className="w-full mb-2 p-2 border"
+              className="w-full p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               value={passwordConfirm}
               onChange={(e) => setPasswordConfirm(e.target.value)}
               disabled={loading}
@@ -188,7 +189,7 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-500 text-white py-2 rounded mt-2"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 sm:py-3 rounded text-sm sm:text-base transition"
           >
             {loading ? "처리 중..." : mode === "login" ? "로그인" : "회원가입"}
           </button>
@@ -197,12 +198,12 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="w-full bg-red-500 text-white py-2 rounded mt-2"
+          className="w-full mt-2 bg-red-500 hover:bg-red-600 text-white py-2 sm:py-3 rounded text-sm sm:text-base transition"
         >
           구글로 계속하기
         </button>
 
-        <div className="mt-4 text-sm text-center text-gray-700">
+        <div className="mt-4 text-center text-gray-700 text-xs sm:text-sm">
           {mode === "login" ? (
             <>
               계정이 없으신가요?{" "}
@@ -226,7 +227,9 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
           )}
         </div>
 
-        {error && <div className="text-red-500 mt-3 text-sm">{error}</div>}
+        {error && (
+          <div className="text-red-500 mt-3 text-sm text-center">{error}</div>
+        )}
       </div>
     </div>,
     document.body,

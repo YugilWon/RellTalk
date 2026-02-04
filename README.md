@@ -6,7 +6,7 @@ Temp-Movie는 좋아하는 영화 정보를 확인하고, 트레일러 시청과
 
 🏆 Popular Movies: TMDB API로 인기 영화 가져오기
 
-🎥 Movie Details & Trailers: Hover 또는 클릭으로 YouTube 트레일러 시청
+🎥 Movie Details & Trailers:클릭으로 YouTube 트레일러 시청
 
 🔑 Authentication:
 
@@ -31,7 +31,7 @@ State/Auth hooks: React Context + Custom hooks
 
 📂 Project Structure
 
-├─ components/ # Reusable React components
+├─ components/
 │ ├─ AuthModal.tsx # Login / Signup modal
 │ ├─ MovieCard.tsx # Movie card with hover trailer
 │ └─ ...

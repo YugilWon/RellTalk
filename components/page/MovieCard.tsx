@@ -37,23 +37,23 @@ const MovieCard = React.memo(({ movie }: Props) => {
         <div
           className="
             absolute inset-0 bg-black/70
-            opacity-0 group-hover:opacity-100
-            transition-opacity duration-300
             flex flex-col items-center justify-center
             text-center px-4
+            opacity-100 sm:opacity-0 sm:group-hover:opacity-100
+            transition-opacity duration-300
           "
         >
           {/* 제목 */}
-          <h2 className="text-white text-lg font-semibold mb-3 leading-snug">
+          <h2 className="text-white text-base sm:text-lg font-semibold mb-2 sm:mb-3 leading-snug line-clamp-2">
             {movie.title}
           </h2>
 
           {/* CTA */}
           <span
             className="
-              text-sm text-white/90
+              text-xs sm:text-sm text-white/90
               border border-white/40 rounded-full
-              px-4 py-1
+              px-3 py-1
               transition-all duration-200
               group-hover:bg-white/10
             "
