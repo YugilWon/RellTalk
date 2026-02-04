@@ -5,6 +5,7 @@ import Navigation from "@/components/ui/Navigation";
 import RecoilProvider from "@/components/recoil/recoilComponent";
 import AuthProvider from "@/components/auth/AuthProvider";
 import QueryProvider from "@/components/query/QueryProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
