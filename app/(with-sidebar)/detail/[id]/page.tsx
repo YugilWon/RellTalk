@@ -1,47 +1,47 @@
-"use client"; // ✅ 클라이언트에서 렌더링
-
 import Image from "next/image";
 import Comments from "@/components/comment/Comment";
-import { useEffect, useState } from "react";
+import { Movie } from "@/(types)/interface";
 
-interface Movie {
-  id: number;
-  title: string;
-  overview: string;
-  backdrop_path: string;
+async function getMovie(id: string): Promise<Movie> {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.NEXT_PUBLIC_APIKEY}&language=ko`,
+    { cache: "no-store" },
+  );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch movie");
+  }
+
+  return res.json();
 }
 
-interface DetailPageProps {
+async function getTrailerId(title: string): Promise<string | null> {
+  const baseUrl = process.env.APP_URL;
+
+  if (!baseUrl) {
+    throw new Error("APP_URL is not defined");
+  }
+
+  const res = await fetch(
+    `${baseUrl}/api/youtubeMovie?title=${encodeURIComponent(title)}`,
+    { cache: "no-store" },
+  );
+
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  return data.videoId ?? null;
+}
+
+export default async function DetailPage({
+  params,
+}: {
   params: { id: string };
-}
+}) {
+  const movie = await getMovie(params.id);
 
-export default function DetailPage({ params }: DetailPageProps) {
-  const [movie, setMovie] = useState<Movie | null>(null);
-  const [trailerId, setTrailerId] = useState<string | null>(null);
-
-  useEffect(() => {
-    // 영화 정보 가져오기
-    fetch(
-      `https://api.themoviedb.org/3/movie/${params.id}?api_key=${process.env.NEXT_PUBLIC_APIKEY}&language=ko`,
-    )
-      .then((res) => res.json())
-      .then(setMovie)
-      .catch(() => null);
-  }, [params.id]);
-
-  useEffect(() => {
-    if (!movie) return;
-
-    // 예고편 가져오기
-    fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/youtubeMovie?title=${encodeURIComponent(movie.title)}`,
-    )
-      .then((res) => res.json())
-      .then((data) => setTrailerId(data.videoId ?? null))
-      .catch(() => null);
-  }, [movie]);
-
-  if (!movie) return <div>Loading...</div>;
+  // 예고편 실패해도 페이지는 정상 렌더
+  const trailerId = await getTrailerId(movie.title).catch(() => null);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
