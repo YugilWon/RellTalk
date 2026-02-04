@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/navigation";
+import Navigation from "@/components/ui/Navigation";
 import RecoilProvider from "@/components/recoil/recoilComponent";
+import AuthProvider from "@/components/auth/AuthProvider";
+import QueryProvider from "@/components/query/QueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +21,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navigation />
-        <RecoilProvider>{children}</RecoilProvider>
+        <RecoilProvider>
+          <QueryProvider>
+            <AuthProvider>
+              <Navigation />
+              {children}
+            </AuthProvider>
+          </QueryProvider>
+        </RecoilProvider>
       </body>
     </html>
   );

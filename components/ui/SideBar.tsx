@@ -1,14 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import YoutubePlayer from "./youtube";
-import MoviePage from "../pages/pages";
-import Login from "./logIn";
+import Login from "../auth/logIn";
 import { useRecoilState } from "recoil";
-import { isLoggedInState, isHoveredState } from "./recoil/recoilState";
+import { isLoggedInState, isHoveredState } from "../recoil/recoilState";
 
 const SideBar = () => {
   const [isHovered, setIsHovered] = useRecoilState(isHoveredState);
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInState);
 
   return (
     <div className="flex">

@@ -6,20 +6,20 @@ export const moviesState = atom<Movie[]>({
   default: [],
 });
 
-export const isLoggedInState = atom({
+export const isLoggedInState = atom<boolean>({
   key: "isLoggedInState",
   default: false,
 });
 
-export const tokenState = atom({
-  key: "tokenState",
-  default: null,
-});
+// export const tokenState = atom<string | null>({
+//   key: "tokenState",
+//   default: null,
+// });
 
-export const tokenExpiryAlertState = atom({
-  key: "tokenExpiryAlertState",
-  default: false,
-});
+// export const tokenExpiryAlertState = atom({
+//   key: "tokenExpiryAlertState",
+//   default: false,
+// });
 
 export const isHoveredState = atom({
   key: "isHoveredState",

@@ -19,6 +19,10 @@ const config: Config = {
       },
     },
   },
+  scale: {
+    "200": "2",
+    "300": "3",
+  },
   plugins: [],
 };
 export default config;

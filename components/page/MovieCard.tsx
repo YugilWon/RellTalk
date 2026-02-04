@@ -1,0 +1,70 @@
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Movie } from "../../(types)/interface";
+
+interface Props {
+  movie: Movie;
+}
+
+const MovieCard = React.memo(({ movie }: Props) => {
+  return (
+    <li
+      className="
+        relative overflow-hidden rounded-lg cursor-pointer
+        transition-transform duration-200 ease-out
+        hover:scale-105 hover:z-30
+        group
+      "
+    >
+      <Link href={`/detail/${movie.id}`} prefetch>
+        {/* 포스터 */}
+        <Image
+          src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+          alt={movie.title}
+          width={500}
+          height={281}
+          className="
+            w-full h-48 object-cover
+            transition-all duration-300
+            group-hover:scale-105 group-hover:blur-[1px]
+          "
+        />
+
+        {/* 오버레이 */}
+        <div
+          className="
+            absolute inset-0 bg-black/70
+            opacity-0 group-hover:opacity-100
+            transition-opacity duration-300
+            flex flex-col items-center justify-center
+            text-center px-4
+          "
+        >
+          {/* 제목 */}
+          <h2 className="text-white text-lg font-semibold mb-3 leading-snug">
+            {movie.title}
+          </h2>
+
+          {/* CTA */}
+          <span
+            className="
+              text-sm text-white/90
+              border border-white/40 rounded-full
+              px-4 py-1
+              transition-all duration-200
+              group-hover:bg-white/10
+            "
+          >
+            자세히 보기 →
+          </span>
+        </div>
+      </Link>
+    </li>
+  );
+});
+
+MovieCard.displayName = "MovieCard";
+export default MovieCard;
