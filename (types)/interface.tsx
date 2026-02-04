@@ -22,3 +22,7 @@ export interface Comment {
   created_at: string;
   user_id: string;
 }
+
+export interface DetailPageProps {
+  params: { id: string };
+}
