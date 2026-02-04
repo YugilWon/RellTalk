@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+🎬 Temp-Movie
 
-## Getting Started
+Temp-Movie는 좋아하는 영화 정보를 확인하고, 트레일러 시청과 댓글 작성까지 가능한 개인 영화 허브입니다.
 
-First, run the development server:
+🚀 Features
 
-```bash
+🏆 Popular Movies: TMDB API로 인기 영화 가져오기
+
+🎥 Movie Details & Trailers: Hover 또는 클릭으로 YouTube 트레일러 시청
+
+🔑 Authentication:
+
+이메일/비밀번호 회원가입 및 로그인
+
+Google OAuth 로그인
+
+프로필 사진 업로드
+
+닉네임 중복 방지
+
+💬 Comments: 영화별 댓글 작성 가능
+
+📱 Responsive Design: 모바일 & 데스크톱 지원
+
+🛠 Tech Stack
+Frontend Backend/Auth Storage API
+Next.js Supabase Supabase Storage TMDB & YouTube
+
+UI: Tailwind CSS
+State/Auth hooks: React Context + Custom hooks
+
+📂 Project Structure
+
+├─ components/ # Reusable React components
+│ ├─ AuthModal.tsx # Login / Signup modal
+│ ├─ MovieCard.tsx # Movie card with hover trailer
+│ └─ ...
+├─ pages/ # Next.js pages
+├─ utils/ # API calls, Supabase client, auth services
+├─ styles/ # Tailwind/custom styles
+└─ public/assets/ # Images, banner, screenshots
+
+⚡ Setup (Local)
+
+Clone the repo:
+
+git clone https://github.com/YugilWon/Temp-Movie-.git
+
+cd Temp-Movie-
+
+Install dependencies:
+
+npm install
+
+or
+
+yarn install
+
+Add environment variables in .env.local:
+
+NEXT_PUBLIC_SUPABASE_URL=<YOUR_SUPABASE_URL>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<YOUR_SUPABASE_ANON_KEY>
+TMDB_API_KEY=<YOUR_TMDB_API_KEY>
+
+Run development server:
+
 npm run dev
-# or
+
+or
+
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🔑 Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Sign up / Login with email or Google OAuth
 
-## Learn More
+Profile picture upload (stored in Supabase Storage)
 
-To learn more about Next.js, take a look at the following resources:
+Nickname uniqueness enforced
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+💡 Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+트레일러는 YouTube API를 통해 iframe으로 재생
 
-## Deploy on Vercel
+댓글은 Supabase DB에 영화 ID와 함께 저장
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Tailwind로 반응형 UI 구현
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+📸 Screenshots
+
+public/assets 폴더에 스크린샷 넣으면 이렇게 표시 가능:
+
+📄 License
+
+MIT License
