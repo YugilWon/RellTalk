@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Comments from "@/components/comment/Comment";
 import { Movie } from "@/(types)/interface";
+import { getYoutubeTrailerId } from "@/app/api/youtubeMovie/youtube";
 
 async function getMovie(id: string): Promise<Movie> {
   const res = await fetch(
@@ -8,29 +9,8 @@ async function getMovie(id: string): Promise<Movie> {
     { cache: "no-store" },
   );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch movie");
-  }
-
+  if (!res.ok) throw new Error("Failed to fetch movie");
   return res.json();
-}
-
-async function getTrailerId(title: string): Promise<string | null> {
-  const baseUrl = process.env.APP_URL;
-
-  if (!baseUrl) {
-    throw new Error("APP_URL is not defined");
-  }
-
-  const res = await fetch(
-    `${baseUrl}/api/youtubeMovie?title=${encodeURIComponent(title)}`,
-    { cache: "no-store" },
-  );
-
-  if (!res.ok) return null;
-
-  const data = await res.json();
-  return data.videoId ?? null;
 }
 
 export default async function DetailPage({
@@ -40,8 +20,7 @@ export default async function DetailPage({
 }) {
   const movie = await getMovie(params.id);
 
-  // 예고편 실패해도 페이지는 정상 렌더
-  const trailerId = await getTrailerId(movie.title).catch(() => null);
+  const trailerId = await getYoutubeTrailerId(movie.title).catch(() => null);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">

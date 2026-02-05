@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useAuthActions } from "../auth/useAuthActions";
 
@@ -8,7 +9,7 @@ type Mode = "login" | "signup";
 
 const AuthModal = ({ onClose }: { onClose: () => void }) => {
   const { login, signup, googleLogin } = useAuthActions();
-
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
@@ -20,7 +21,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
   const [mounted, setMounted] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  /* avatar preview */
   useEffect(() => {
     if (!avatar) {
       setPreviewUrl(null);
@@ -33,7 +33,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
     return () => URL.revokeObjectURL(url);
   }, [avatar]);
 
-  /* modal mount */
   useEffect(() => {
     setMounted(true);
     document.body.style.overflow = "hidden";
@@ -58,6 +57,7 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
     try {
       if (mode === "login") {
         await login({ email, password });
+        router.refresh();
         onClose();
         return;
       }
@@ -68,7 +68,7 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         nickname,
         avatar,
       });
-
+      router.refresh();
       alert("회원가입이 완료되었습니다.");
       setMode("login");
     } catch (err: any) {

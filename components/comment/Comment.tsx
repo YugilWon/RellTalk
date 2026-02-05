@@ -10,12 +10,6 @@ import {
 } from "@/app/lib/comments";
 import { useUser } from "@/hooks/useUser";
 import { Comment } from "@/(types)/interface";
-// interface Comment {
-//   id: string;
-//   content: string;
-//   created_at: string;
-//   user_id: string;
-// }
 
 export default function Comments({ movieId }: { movieId: string }) {
   const queryClient = useQueryClient();

@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   if (!title) {
     return NextResponse.json(
       { error: "영화 제목이 필요합니다." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -16,14 +16,14 @@ export async function GET(req: Request) {
   if (!YOUTUBE_API_KEY) {
     return NextResponse.json(
       { error: "YouTube API Key가 없습니다." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
   const searchQuery = `${title} official trailer`;
 
   const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(
-    searchQuery
+    searchQuery,
   )}&key=${YOUTUBE_API_KEY}&maxResults=1&type=video`;
 
   try {
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
     if (!data.items || data.items.length === 0) {
       return NextResponse.json(
         { error: "예고편을 찾을 수 없습니다." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -45,7 +45,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(
       { error: "YouTube API 요청 실패" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
