@@ -8,7 +8,6 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
-      {/* 가짜 영상 (썸네일 + 버튼) */}
       {!play && (
         <button
           onClick={() => setPlay(true)}
@@ -19,7 +18,6 @@ export default function HeroSection() {
         </button>
       )}
 
-      {/* 실제 유튜브 (클릭 후) */}
       {play && <YoutubePlayer />}
     </section>
   );

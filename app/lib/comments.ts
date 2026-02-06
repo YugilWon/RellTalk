@@ -1,7 +1,13 @@
 import { supabase } from "@/utils/supabase/client";
+import { CommentTargetType } from "@/(types)/interface";
 
-/* 댓글 목록 */
-export async function fetchComments(movieId: string) {
+export async function fetchComments({
+  targetId,
+  targetType,
+}: {
+  targetId: string;
+  targetType: CommentTargetType;
+}) {
   const { data, error } = await supabase
     .from("comments")
     .select(
@@ -9,21 +15,23 @@ export async function fetchComments(movieId: string) {
       id,
       content,
       created_at,
+      updated_at,
       user_id,
+      target_type,
       profiles:comments_user_id_profiles_fkey (
         nickname,
         avatar_url
       )
     `,
     )
-    .eq("movie_id", movieId)
+    .eq("target_id", targetId)
+    .eq("target_type", targetType)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
 
   return data.map((comment) => {
-    // profiles가 배열로 들어오므로, 첫 번째 요소([0])를 꺼냅니다.
-    // 만약 단일 객체로 설정되어 있지 않다면 Supabase는 기본적으로 배열로 반환합니다.
+    // profiles가 배열로 들어오므로
     const profile = Array.isArray(comment.profiles)
       ? comment.profiles[0]
       : comment.profiles;
@@ -32,23 +40,31 @@ export async function fetchComments(movieId: string) {
       id: comment.id,
       content: comment.content,
       createdAt: comment.created_at,
+      updatedAt: comment.updated_at,
       userId: comment.user_id,
       nickname: profile?.nickname || "익명",
       avatarUrl: profile?.avatar_url || "기본이미지경로",
+      targetType: comment.target_type,
     };
   });
 }
-/* 댓글 작성 */
+
 export async function createComment({
-  movieId,
+  targetId,
+  targetType,
   content,
 }: {
-  movieId: string;
+  targetId: string;
+  targetType: CommentTargetType;
   content: string;
 }) {
   const { data, error } = await supabase
     .from("comments")
-    .insert({ movie_id: movieId, content })
+    .insert({
+      target_id: targetId,
+      target_type: targetType,
+      content,
+    })
     .select()
     .single();
 
@@ -56,7 +72,6 @@ export async function createComment({
   return data;
 }
 
-/* 댓글 수정 */
 export async function updateComment({
   id,
   content,
@@ -66,13 +81,12 @@ export async function updateComment({
 }) {
   const { error } = await supabase
     .from("comments")
-    .update({ content })
+    .update({ content, updated_at: new Date().toISOString() })
     .eq("id", id);
 
   if (error) throw error;
 }
 
-/* 댓글 삭제 */
 export async function deleteComment(id: string) {
   const { error } = await supabase.from("comments").delete().eq("id", id);
   if (error) throw error;

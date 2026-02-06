@@ -18,7 +18,6 @@ export default function GlobalSearch() {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const abortController = useRef<AbortController | null>(null);
 
-  // 🔥 서버 검색 요청
   const fetchMovies = async (query: string) => {
     if (!query.trim()) return;
 
@@ -45,7 +44,6 @@ export default function GlobalSearch() {
     }
   };
 
-  // ⏱ 디바운스 검색
   useEffect(() => {
     if (!open) return;
 
@@ -64,7 +62,6 @@ export default function GlobalSearch() {
     };
   }, [keyword, open]);
 
-  // ⏎ Enter / 버튼 클릭 검색
   const executeSearch = () => {
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
@@ -72,12 +69,10 @@ export default function GlobalSearch() {
     fetchMovies(keyword);
   };
 
-  // 🔎 검색창 열릴 때 포커스
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open]);
 
-  // ⎋ ESC 닫기
   useEffect(() => {
     if (!open) return;
 
@@ -89,7 +84,6 @@ export default function GlobalSearch() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open]);
 
-  // 🖱 바깥 클릭 닫기
   useEffect(() => {
     if (!open) return;
 
@@ -107,7 +101,6 @@ export default function GlobalSearch() {
     return () => window.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
-  // 🔄 검색어 지우면 결과 초기화
   useEffect(() => {
     if (!keyword.trim()) {
       setResults([]);
@@ -116,7 +109,6 @@ export default function GlobalSearch() {
 
   return (
     <div className="fixed top-4 right-4 z-50">
-      {/* 🔍 닫혀 있을 때 검색 버튼 */}
       {!open && (
         <button
           aria-label="검색 열기"
@@ -127,13 +119,11 @@ export default function GlobalSearch() {
         </button>
       )}
 
-      {/* 🔎 검색창 + 결과 */}
       {open && (
         <div
           ref={searchBoxRef}
           className="relative w-72 bg-black/80 rounded-md px-3 py-2"
         >
-          {/* 입력 영역 */}
           <div className="flex items-center gap-2">
             <input
               ref={inputRef}
@@ -155,7 +145,6 @@ export default function GlobalSearch() {
             </button>
           </div>
 
-          {/* 검색 결과 */}
           {loading && (
             <div className="mt-2 text-xs text-white/60">검색 중...</div>
           )}
@@ -171,7 +160,6 @@ export default function GlobalSearch() {
                     href={`/detail/${movie.id}`}
                     className="flex items-center gap-3 p-2 rounded hover:bg-white/10 transition"
                   >
-                    {/* 포스터 */}
                     {movie.poster_path ? (
                       <Image
                         src={`${IMAGE_BASE_URL}${movie.poster_path}`}
@@ -184,7 +172,6 @@ export default function GlobalSearch() {
                       <div className="w-10 h-14 bg-white/10 rounded" />
                     )}
 
-                    {/* 제목 */}
                     <span className="text-sm text-white line-clamp-2">
                       {movie.title}
                     </span>

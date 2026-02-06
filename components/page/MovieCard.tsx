@@ -20,20 +20,20 @@ const MovieCard = React.memo(({ movie }: Props) => {
       "
     >
       <Link href={`/detail/${movie.id}`} prefetch>
-        {/* 포스터 */}
-        <Image
-          src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
-          alt={movie.title}
-          width={500}
-          height={281}
-          className="
-            w-full h-48 object-cover
-            transition-all duration-300
-            group-hover:scale-105 group-hover:blur-[1px]
-          "
-        />
+        {movie.backdrop_path ? (
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+            alt={movie.title}
+            width={500}
+            height={281}
+            className="w-full h-48 object-cover transition-all duration-300 group-hover:scale-105 group-hover:blur-[1px]"
+          />
+        ) : (
+          <div className="w-full h-48 bg-gray-800 flex items-center justify-center text-white text-sm">
+            이미지 없음
+          </div>
+        )}
 
-        {/* 오버레이 */}
         <div
           className="
             absolute inset-0 bg-black/70
@@ -43,12 +43,10 @@ const MovieCard = React.memo(({ movie }: Props) => {
             transition-opacity duration-300
           "
         >
-          {/* 제목 */}
           <h2 className="text-white text-base sm:text-lg font-semibold mb-2 sm:mb-3 leading-snug line-clamp-2">
             {movie.title}
           </h2>
 
-          {/* CTA */}
           <span
             className="
               text-xs sm:text-sm text-white/90

@@ -10,20 +10,17 @@ declare global {
 
 const YoutubePlayer = () => {
   useEffect(() => {
-    // 이미 로드돼 있으면 재삽입 방지
-    if (window.YT) return;
-
     const loadYouTubeAPI = () => {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      tag.async = true;
-      document.body.appendChild(tag);
+      const createPlayer = () => {
+        const playerContainer = document.getElementById("youtube-player");
+        if (playerContainer) {
+          playerContainer.innerHTML = "";
+        }
 
-      window.onYouTubeIframeAPIReady = () => {
         const player = new window.YT.Player("youtube-player", {
           height: "720",
           width: "100%",
-          videoId: "", // "_XyzRij5AqU"
+          videoId: "",
           playerVars: {
             autoplay: 1,
             controls: 1,
@@ -41,9 +38,19 @@ const YoutubePlayer = () => {
           },
         });
       };
+
+      if (window.YT && window.YT.Player) {
+        createPlayer();
+      } else {
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        tag.async = true;
+        document.body.appendChild(tag);
+
+        window.onYouTubeIframeAPIReady = createPlayer;
+      }
     };
 
-    // 🔥 브라우저 idle 시점에 로드 → LCP 제외
     if ("requestIdleCallback" in window) {
       (window as any).requestIdleCallback(loadYouTubeAPI);
     } else {

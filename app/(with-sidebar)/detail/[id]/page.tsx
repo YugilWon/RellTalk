@@ -24,15 +24,23 @@ export default async function DetailPage({
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
-      {/* 🎬 HERO */}
       <div className="relative h-[300px] sm:h-[420px] md:h-[500px] lg:h-[600px]">
-        <Image
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          alt={movie.title}
-          fill
-          priority
-          className="object-cover"
-        />
+        {movie.backdrop_path ? (
+          <Image
+            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+            alt={movie.title}
+            fill
+            priority
+            className="object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+            <span className="text-gray-300 text-sm sm:text-base">
+              이미지 없음
+            </span>
+          </div>
+        )}
+
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
 
         <div className="absolute bottom-4 sm:bottom-10 left-1/2 -translate-x-1/2 w-full max-w-5xl px-4 sm:px-6">
@@ -45,10 +53,8 @@ export default async function DetailPage({
         </div>
       </div>
 
-      {/* 📦 CONTENT */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-12 sm:space-y-16">
-        {/* 🎞 예고편 */}
-        {trailerId && (
+        {trailerId ? (
           <section>
             <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
               예고편
@@ -61,12 +67,13 @@ export default async function DetailPage({
               />
             </div>
           </section>
+        ) : (
+          <p className="text-gray-400 italic">예고편이 없습니다.</p>
         )}
 
-        {/* 💬 댓글 */}
         <section>
           <h2 className="text-xl sm:text-2xl font-bold mb-4">댓글</h2>
-          <Comments movieId={params.id} />
+          <Comments targetId={params.id} targetType="movie" />
         </section>
       </div>
     </div>

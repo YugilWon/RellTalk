@@ -1,24 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchComments, createComment } from "@/app/lib/comments";
+import { CommentTargetType } from "@/(types)/interface";
 
-/* 댓글 목록 */
-export const useComments = (movieId: string) => {
+export const useComments = (
+  targetId: string,
+  targetType: CommentTargetType,
+) => {
   return useQuery({
-    queryKey: ["comments", movieId],
-    queryFn: () => fetchComments(movieId),
-    enabled: !!movieId,
+    queryKey: ["comments", targetType, targetId],
+    queryFn: () => fetchComments({ targetId, targetType }),
+    enabled: !!targetId,
   });
 };
 
-/* 댓글 작성 */
-export const useCreateComment = (movieId: string) => {
+export const useCreateComment = (
+  targetId: string,
+  targetType: CommentTargetType,
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: createComment,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["comments", movieId],
+        queryKey: ["comments", targetType, targetId],
       });
     },
   });

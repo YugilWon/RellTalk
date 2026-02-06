@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Login from "../auth/logIn";
 import { useRecoilState } from "recoil";
 import { isLoggedInState, isHoveredState } from "../recoil/recoilState";
+import Logo from "./Logo";
 
 const SideBar = () => {
   const [isHovered, setIsHovered] = useRecoilState(isHoveredState);
@@ -17,7 +18,7 @@ const SideBar = () => {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div className="p-4 cursor-pointer flex items-center justify-between">
-          <span>{isHovered ? "SideBar Name" : "->"}</span>
+          {isHovered ? <Logo /> : "->"}
           {isHovered && <Login />}
         </div>
         <div
@@ -26,7 +27,7 @@ const SideBar = () => {
           }`}
         >
           <ul>
-            <li className="p-2 hover:bg-gray-600">자유 게시판</li>
+            <li className="p-2 hover:bg-gray-600">마이 페이지</li>
             <li className="p-2 hover:bg-gray-600">추천작</li>
             <li className="p-2 hover:bg-gray-600">고객센터</li>
           </ul>

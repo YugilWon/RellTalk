@@ -109,7 +109,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         <form onSubmit={handleSubmit} className="space-y-3">
           {mode === "signup" && (
             <>
-              {/* 프로필 이미지 */}
               <label
                 htmlFor="avatar-upload"
                 className="flex flex-col items-center justify-center w-24 h-24 mx-auto mb-4 rounded-full border border-dashed cursor-pointer hover:bg-gray-50 overflow-hidden"
@@ -138,7 +137,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
                 />
               </label>
 
-              {/* 닉네임 */}
               <input
                 type="text"
                 placeholder="닉네임"
@@ -151,7 +149,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
             </>
           )}
 
-          {/* 이메일 */}
           <input
             type="email"
             placeholder="이메일"
@@ -162,7 +159,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
             required
           />
 
-          {/* 비밀번호 */}
           <input
             type="password"
             placeholder="비밀번호"
@@ -173,7 +169,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
             required
           />
 
-          {/* 비밀번호 확인 */}
           {mode === "signup" && (
             <input
               type="password"

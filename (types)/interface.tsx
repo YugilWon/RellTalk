@@ -16,20 +16,21 @@ export type SearchMovie = {
   poster_path: string | null;
 };
 
+export type CommentTargetType = "movie" | "post";
+
 export interface Comment {
   id: string;
   content: string;
-  createdAt: string; // created_at에서 변경됨
-  userId: string; // user_id에서 변경됨
-  nickname: string; // 추가됨
-  avatarUrl: string; // 추가됨
+  createdAt: string;
+  userId: string;
+  nickname: string;
+  avatarUrl: string;
+  updatedAt: string;
+  targetType: CommentTargetType;
 }
 
-export interface MovieComment {
-  id: string;
+export type CreateCommentPayload = {
+  targetId: string;
+  targetType: "movie" | "post";
   content: string;
-  created_at: string;
-  user_id: string;
-  nickname: string;
-  avatar_url: string;
-}
+};
