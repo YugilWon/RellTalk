@@ -57,7 +57,7 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
     try {
       if (mode === "login") {
         await login({ email, password });
-        router.refresh();
+        window.location.reload();
         onClose();
         return;
       }

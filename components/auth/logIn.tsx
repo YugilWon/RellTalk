@@ -14,6 +14,7 @@ const Login = () => {
   const handleLoginLogout = async () => {
     if (isLoggedIn) {
       await supabase.auth.signOut();
+      window.location.reload();
     } else {
       setIsModalOpen(true);
     }
