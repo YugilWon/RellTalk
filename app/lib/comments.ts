@@ -1,16 +1,16 @@
 import { supabase } from "@/utils/supabase/client";
 
 /* 댓글 목록 */
-export async function fetchComments(movieId: string): Promise<Comment[]> {
+export async function fetchComments(movieId: string) {
   const { data, error } = await supabase
     .from("comments")
     .select(
       `
-      id, 
-      content, 
-      created_at, 
+      id,
+      content,
+      created_at,
       user_id,
-      profiles (
+      profiles:comments_user_id_profiles_fkey (
         nickname,
         avatar_url
       )
@@ -21,19 +21,23 @@ export async function fetchComments(movieId: string): Promise<Comment[]> {
 
   if (error) throw error;
 
-  // 2. 여기서 'as unknown as'를 사용하여 타입을 강제로 매칭시킨 후 변환합니다.
-  const rawData = data as unknown as SupabaseCommentPayload[];
+  return data.map((comment) => {
+    // profiles가 배열로 들어오므로, 첫 번째 요소([0])를 꺼냅니다.
+    // 만약 단일 객체로 설정되어 있지 않다면 Supabase는 기본적으로 배열로 반환합니다.
+    const profile = Array.isArray(comment.profiles)
+      ? comment.profiles[0]
+      : comment.profiles;
 
-  return rawData.map((item) => ({
-    id: item.id,
-    content: item.content,
-    created_at: item.created_at,
-    user_id: item.user_id,
-    nickname: item.profiles?.nickname ?? "익명 유저",
-    avatar_url: item.profiles?.avatar_url ?? null,
-  }));
+    return {
+      id: comment.id,
+      content: comment.content,
+      createdAt: comment.created_at,
+      userId: comment.user_id,
+      nickname: profile?.nickname || "익명",
+      avatarUrl: profile?.avatar_url || "기본이미지경로",
+    };
+  });
 }
-
 /* 댓글 작성 */
 export async function createComment({
   movieId,

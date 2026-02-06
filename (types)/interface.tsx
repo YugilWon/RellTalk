@@ -19,6 +19,17 @@ export type SearchMovie = {
 export interface Comment {
   id: string;
   content: string;
+  createdAt: string; // created_at에서 변경됨
+  userId: string; // user_id에서 변경됨
+  nickname: string; // 추가됨
+  avatarUrl: string; // 추가됨
+}
+
+export interface MovieComment {
+  id: string;
+  content: string;
   created_at: string;
   user_id: string;
+  nickname: string;
+  avatar_url: string;
 }
