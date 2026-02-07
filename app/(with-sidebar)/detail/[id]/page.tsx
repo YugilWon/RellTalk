@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Comments from "@/components/comment/Comment";
 import { Movie } from "@/(types)/interface";
-import { getYoutubeTrailerId } from "@/app/api/youtubeMovie/youtube";
+import { getYoutubeTrailerId } from "@/app/lib/youtube";
 
 async function getMovie(id: string): Promise<Movie> {
   const res = await fetch(

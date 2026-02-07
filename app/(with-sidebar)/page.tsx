@@ -1,6 +1,6 @@
 import { getPopularMovies } from "@/app/lib/movies";
 // import { getYoutubeTrailerId } from "@/app/api/youtubeMovie/youtube";
-import { getYoutubeTrailerId } from "../api/youtubeMovie/youtube";
+import { getYoutubeTrailerId } from "../lib/youtube";
 import MainLayoutClient from "@/components/page/MainLayOutClient";
 import MoviePage from "@/components/page/MoviePage";
 import YoutubePlayer from "@/components/youtube/youtube";

@@ -1,6 +1,10 @@
 "use client";
 import { useEffect } from "react";
-import { YoutubePlayerProps } from "@/(types)/interface";
+
+export type YoutubePlayerProps = {
+  videoId: string | null;
+};
+
 declare global {
   interface Window {
     onYouTubeIframeAPIReady?: () => void;
