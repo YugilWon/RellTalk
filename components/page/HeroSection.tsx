@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import YoutubePlayer from "@/components/media/youtube";
+import YoutubePlayer from "@/components/youtube/youtube";
 
 export default function HeroSection() {
   const [play, setPlay] = useState(false);

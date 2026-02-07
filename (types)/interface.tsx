@@ -7,6 +7,10 @@ export type Movie = {
   backdrop_path: string;
 };
 
+export interface Props {
+  movie: Movie;
+}
+
 export type JWTPayload = {
   exp: number;
   [key: string]: any;

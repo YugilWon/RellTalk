@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-
+import { YoutubePlayerProps } from "@/(types)/interface";
 declare global {
   interface Window {
     onYouTubeIframeAPIReady?: () => void;
@@ -8,8 +8,14 @@ declare global {
   }
 }
 
-const YoutubePlayer = () => {
+const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
   useEffect(() => {
+    if (!videoId) return;
+
+    const isMobile =
+      typeof window !== "undefined" &&
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     const loadYouTubeAPI = () => {
       const createPlayer = () => {
         const playerContainer = document.getElementById("youtube-player");
@@ -20,9 +26,9 @@ const YoutubePlayer = () => {
         const player = new window.YT.Player("youtube-player", {
           height: "720",
           width: "100%",
-          videoId: "",
+          videoId,
           playerVars: {
-            autoplay: 1,
+            autoplay: isMobile ? 0 : 1,
             controls: 1,
             modestbranding: 1,
             rel: 1,
@@ -56,7 +62,9 @@ const YoutubePlayer = () => {
     } else {
       setTimeout(loadYouTubeAPI, 2000);
     }
-  }, []);
+  }, [videoId]);
+
+  if (!videoId) return null;
 
   return (
     <div className="flex justify-center bg-black py-8">

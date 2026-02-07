@@ -3,11 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Movie } from "../../(types)/interface";
-
-interface Props {
-  movie: Movie;
-}
+import { Props } from "../../(types)/interface";
 
 const MovieCard = React.memo(({ movie }: Props) => {
   return (

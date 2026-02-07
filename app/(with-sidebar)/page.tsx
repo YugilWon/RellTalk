@@ -1,17 +1,26 @@
+import { getPopularMovies } from "@/app/lib/movies";
+// import { getYoutubeTrailerId } from "@/app/api/youtubeMovie/youtube";
+import { getYoutubeTrailerId } from "../api/youtubeMovie/route";
 import MainLayoutClient from "@/components/page/MainLayOutClient";
 import MoviePage from "@/components/page/MoviePage";
+import YoutubePlayer from "@/components/youtube/youtube";
 import GlobalSearch from "@/components/ui/Search";
-import YoutubePlayer from "@/components/media/youtube";
 
-export default function Page() {
+export default async function Page() {
+  const movies = await getPopularMovies();
+
+  const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+
+  const trailerId = (await getYoutubeTrailerId(randomMovie.title)) ?? null;
+
   return (
-    <>
+    <MainLayoutClient>
       <div className="sticky top-4 z-50 flex justify-end">
         <GlobalSearch />
       </div>
 
-      <YoutubePlayer />
-      <MoviePage />
-    </>
+      <YoutubePlayer videoId={trailerId} />
+      <MoviePage movies={movies} />
+    </MainLayoutClient>
   );
 }
