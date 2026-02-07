@@ -11,16 +11,6 @@ export const isLoggedInState = atom<boolean>({
   default: false,
 });
 
-// export const tokenState = atom<string | null>({
-//   key: "tokenState",
-//   default: null,
-// });
-
-// export const tokenExpiryAlertState = atom({
-//   key: "tokenExpiryAlertState",
-//   default: false,
-// });
-
 export const isHoveredState = atom({
   key: "isHoveredState",
   default: false,

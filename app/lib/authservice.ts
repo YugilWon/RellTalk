@@ -30,7 +30,6 @@ export async function signUp({
   const user = data.user;
   if (!user) throw new Error("유저 생성 실패");
 
-  // Image는 선택
   let avatarUrl: string | null = null;
 
   if (avatar) {

@@ -9,7 +9,7 @@ import {
 } from "./useComment";
 import { useUser } from "@/hooks/useUser";
 import { CommentTargetType } from "@/(types)/interface";
-import CommentCard from "./CommentCard";
+import CommentCard from "./CommentItem";
 
 export default function Comments({
   targetId,

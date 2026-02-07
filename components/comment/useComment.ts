@@ -1,11 +1,10 @@
-// hooks/useComments.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchComments,
   createComment,
   updateComment,
   deleteComment,
-} from "@/app/lib/fetchComments";
+} from "@/app/lib/comments";
 import {
   CommentTargetType,
   CreateCommentPayload,

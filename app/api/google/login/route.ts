@@ -1,4 +1,3 @@
-// app/api/google/login/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -11,7 +10,7 @@ export async function POST(req: Request) {
     if (!email) {
       return NextResponse.json(
         { message: "Email is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -30,7 +29,7 @@ export async function POST(req: Request) {
     console.error("google login error:", err);
     return NextResponse.json(
       { message: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,4 +1,3 @@
-// components/page/MovieList.tsx
 import MovieCard from "./MovieCard";
 import { Movie } from "@/(types)/interface";
 
@@ -19,10 +18,8 @@ export default async function MovieList() {
   const responses = await Promise.all(requests);
   const data = await Promise.all(responses.map((r) => r.json()));
 
-  // 🔥 모든 페이지 결과 합치기
   const movies: Movie[] = data.flatMap((d) => d.results);
 
-  // 🔥 중복 제거 (movie.id 기준)
   const uniqueMovies: Movie[] = Array.from(
     new Map(movies.map((movie) => [movie.id, movie])).values(),
   );

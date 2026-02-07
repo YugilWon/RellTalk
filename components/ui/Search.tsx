@@ -1,73 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Search } from "lucide-react";
-import { SearchMovie } from "@/(types)/interface";
+import { useSearch, IMAGE_BASE_URL } from "../search/useSearch";
 import Image from "next/image";
 import Link from "next/link";
-const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w92";
 
-export default function GlobalSearch() {
+export default function SearchBox() {
   const [open, setOpen] = useState(false);
-  const [keyword, setKeyword] = useState("");
-  const [results, setResults] = useState<SearchMovie[]>([]);
-  const [loading, setLoading] = useState(false);
-
   const searchBoxRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
-  const abortController = useRef<AbortController | null>(null);
 
-  const fetchMovies = async (query: string) => {
-    if (!query.trim()) return;
-
-    abortController.current?.abort();
-    abortController.current = new AbortController();
-
-    try {
-      setLoading(true);
-
-      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
-        signal: abortController.current.signal,
-      });
-
-      if (!res.ok) throw new Error("검색 실패");
-
-      const data = await res.json();
-      setResults(data.results || []);
-    } catch (err: any) {
-      if (err.name !== "AbortError") {
-        console.error(err);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!open) return;
-
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-
-    debounceTimer.current = setTimeout(() => {
-      fetchMovies(keyword);
-    }, 700);
-
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-    };
-  }, [keyword, open]);
-
-  const executeSearch = () => {
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-    fetchMovies(keyword);
-  };
+  const { keyword, setKeyword, results, loading, executeSearch } = useSearch();
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -75,37 +19,27 @@ export default function GlobalSearch() {
 
   useEffect(() => {
     if (!open) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
-    setKeyword("");
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open]);
 
   useEffect(() => {
     if (!open) return;
-
     const handleClickOutside = (e: MouseEvent) => {
       if (
         searchBoxRef.current &&
         !searchBoxRef.current.contains(e.target as Node)
       ) {
-        setKeyword("");
         setOpen(false);
+        setKeyword("");
       }
     };
-
     window.addEventListener("mousedown", handleClickOutside);
     return () => window.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
-
-  useEffect(() => {
-    if (!keyword.trim()) {
-      setResults([]);
-    }
-  }, [keyword]);
+  }, [open, setKeyword]);
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -135,12 +69,7 @@ export default function GlobalSearch() {
               placeholder="영화 제목 검색"
               className="flex-1 bg-transparent text-white outline-none text-sm"
             />
-
-            <button
-              aria-label="검색 실행"
-              onClick={executeSearch}
-              className="p-1"
-            >
+            <button onClick={executeSearch} className="p-1">
               <Search size={16} className="text-white" />
             </button>
           </div>
@@ -154,11 +83,11 @@ export default function GlobalSearch() {
               {results.slice(0, 8).map((movie) => (
                 <li
                   key={movie.id}
-                  className="flex items-center gap-3 p-2 rounded hover:bg-white/10 cursor-pointer"
+                  className="flex items-center gap-3 p-2 rounded hover:bg-white/10"
                 >
                   <Link
                     href={`/detail/${movie.id}`}
-                    className="flex items-center gap-3 p-2 rounded hover:bg-white/10 transition"
+                    className="flex items-center gap-3"
                   >
                     {movie.poster_path ? (
                       <Image
@@ -171,7 +100,6 @@ export default function GlobalSearch() {
                     ) : (
                       <div className="w-10 h-14 bg-white/10 rounded" />
                     )}
-
                     <span className="text-sm text-white line-clamp-2">
                       {movie.title}
                     </span>

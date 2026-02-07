@@ -8,7 +8,6 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get("q");
 
-    // 1️⃣ 검색어 없을 때
     if (!query) {
       return NextResponse.json(
         { message: "검색어가 없습니다." },
@@ -16,7 +15,6 @@ export async function GET(request: Request) {
       );
     }
 
-    // 3️⃣ 공백만 들어온 경우 방지
     const trimmedQuery = query.trim();
     if (!trimmedQuery) {
       return NextResponse.json(
@@ -25,13 +23,11 @@ export async function GET(request: Request) {
       );
     }
 
-    // TMDB 검색 API 호출
     const res = await fetch(
       `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=ko&query=${encodeURIComponent(
         trimmedQuery,
       )}&include_adult=false`,
       {
-        // 검색 결과는 실시간성이 중요 → 캐시 X
         cache: "no-store",
       },
     );

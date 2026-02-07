@@ -3,8 +3,7 @@
 import SideBar from "../ui/SideBar";
 import { useRecoilValue } from "recoil";
 import { isHoveredState } from "@/components/recoil/recoilState";
-import useAuthCheck from "@/components/hooks/useAuthCheck";
-import Logo from "../ui/Logo";
+import useAuthCheck from "@/components/auth/useAuthCheck";
 
 export default function MainLayoutClient({
   children,
