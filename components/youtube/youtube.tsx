@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 
 export type YoutubePlayerProps = {
-  videoId: string | null;
+  videoId?: string | null;
 };
 
 declare global {
