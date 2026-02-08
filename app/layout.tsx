@@ -6,6 +6,7 @@ import RecoilProvider from "@/components/recoil/recoilComponent";
 import AuthProvider from "@/components/auth/AuthProvider";
 import QueryProvider from "@/components/query/QueryProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,9 @@ export default function RootLayout({
             <AuthProvider>
               <Navigation />
               {children}
+              {/* 버셀 성능 테스트용 */}
+              <Analytics />
+              <SpeedInsights />
             </AuthProvider>
           </QueryProvider>
         </RecoilProvider>
