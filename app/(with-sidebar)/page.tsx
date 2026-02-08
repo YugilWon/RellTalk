@@ -15,12 +15,17 @@ export default async function Page() {
 
   return (
     <MainLayout>
-      <div className="sticky top-4 z-50 flex justify-end">
+      <div className="sticky top-4 z-50 flex justify-end mb-4">
         <GlobalSearch />
       </div>
 
-      <YoutubePlayer videoId={trailerId} />
-      <MoviePage movies={movies} />
+      <section className="px-4">
+        <YoutubePlayer videoId={trailerId} />
+      </section>
+
+      <section className="px-4 mt-6">
+        <MoviePage movies={movies} />
+      </section>
     </MainLayout>
   );
 }
