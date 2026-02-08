@@ -5,6 +5,7 @@ export type Movie = {
   title: string;
   overview: string;
   backdrop_path: string;
+  mainTrailerId: string | null;
 };
 
 export interface Props {

@@ -1,17 +1,7 @@
 import Image from "next/image";
 import Comments from "@/components/comment/Comment";
-import { Movie } from "@/(types)/interface";
+import { getMovie } from "@/app/lib/movies";
 import { getYoutubeTrailerId } from "@/app/lib/youtube";
-
-async function getMovie(id: string): Promise<Movie> {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.NEXT_PUBLIC_APIKEY}&language=ko`,
-    { cache: "no-store" },
-  );
-
-  if (!res.ok) throw new Error("Failed to fetch movie");
-  return res.json();
-}
 
 export default async function DetailPage({
   params,

@@ -1,17 +1,17 @@
-import { getPopularMovies } from "@/app/lib/movies";
+import { getPopularMovies } from "../lib/movies";
 import { getYoutubeTrailerId } from "../lib/youtube";
 import MainLayout from "@/components/page/MainLayOut";
 import MoviePage from "@/components/page/MoviePage";
 import YoutubePlayer from "@/components/youtube/youtube";
 import GlobalSearch from "@/components/ui/Search";
-import { Analytics } from "@vercel/analytics/next";
 
 export default async function Page() {
   const movies = await getPopularMovies();
 
   const randomMovie = movies[Math.floor(Math.random() * movies.length)];
 
-  const trailerId = (await getYoutubeTrailerId(randomMovie.title)) ?? null;
+  const trailerId =
+    randomMovie.mainTrailerId ?? (await getYoutubeTrailerId(randomMovie.title));
 
   return (
     <MainLayout>
