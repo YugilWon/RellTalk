@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import YoutubePlayer from "../youtube/youtube";
-export default function HeroSection() {
+export default function TrailerSection() {
   const [play, setPlay] = useState(false);
 
   return (

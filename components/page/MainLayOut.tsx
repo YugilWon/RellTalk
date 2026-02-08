@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { isHoveredState } from "@/components/recoil/recoilState";
 import useAuthCheck from "@/components/auth/useAuthCheck";
 
-export default function MainLayoutClient({
+export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ export default function MainLayoutClient({
   const isSidebarOpen = useRecoilValue(isHoveredState);
 
   return (
-    <div className="relative flex h-screen">
+    <div>
       <SideBar />
 
       <div

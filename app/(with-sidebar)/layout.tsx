@@ -1,9 +1,9 @@
-import MainLayoutClient from "@/components/page/MainLayOutClient";
+import MainLayout from "@/components/page/MainLayOut";
 
 export default function WithSidebarLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <MainLayoutClient>{children}</MainLayoutClient>;
+  return <MainLayout>{children}</MainLayout>;
 }

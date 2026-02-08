@@ -2,9 +2,9 @@
 
 import { useRecoilValue } from "recoil";
 import { isHoveredState } from "@/components/recoil/recoilState";
-import HeroSection from "./HeroSection";
+import TrailerSection from "./TrailerSection";
 
-export default function MainContentShell() {
+export default function MainContent() {
   const isHovered = useRecoilValue(isHoveredState);
 
   return (
@@ -13,7 +13,7 @@ export default function MainContentShell() {
         isHovered ? "ml-64" : "ml-16"
       } p-4`}
     >
-      <HeroSection />
+      <TrailerSection />
     </div>
   );
 }
