@@ -74,10 +74,7 @@ const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
     <div className="flex justify-center bg-black py-8">
       <div
         id="youtube-player"
-        className="
-        w-[92%]
-        sm:w-full
-      "
+        className="w-full"
         aria-label="YouTube video player"
       />
     </div>

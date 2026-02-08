@@ -22,18 +22,10 @@ const MovieCard = React.memo(({ movie }: Props) => {
             alt={movie.title}
             width={500}
             height={281}
-            className="
-              w-full
-              h-36        /* 모바일 */
-              sm:h-48     /* 웹 */
-              object-cover
-              transition-all duration-300
-              group-hover:scale-105
-              group-hover:blur-[1px]
-            "
+            className="w-full h-48 object-cover transition-all duration-300 group-hover:scale-105 group-hover:blur-[1px]"
           />
         ) : (
-          <div className="w-full h-36 sm:h-48 bg-gray-800 flex items-center justify-center text-white text-sm">
+          <div className="w-full h-48 bg-gray-800 flex items-center justify-center text-white text-sm">
             이미지 없음
           </div>
         )}
@@ -42,12 +34,12 @@ const MovieCard = React.memo(({ movie }: Props) => {
           className="
             absolute inset-0 bg-black/70
             flex flex-col items-center justify-center
-            text-center px-3 sm:px-4
+            text-center px-4
             opacity-100 sm:opacity-0 sm:group-hover:opacity-100
             transition-opacity duration-300
           "
         >
-          <h2 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-3 leading-snug line-clamp-2 text-white">
+          <h2 className="text-white text-base sm:text-lg font-semibold mb-2 sm:mb-3 leading-snug line-clamp-2">
             {movie.title}
           </h2>
 
@@ -55,7 +47,7 @@ const MovieCard = React.memo(({ movie }: Props) => {
             className="
               text-xs sm:text-sm text-white/90
               border border-white/40 rounded-full
-              px-2 sm:px-3 py-1
+              px-3 py-1
               transition-all duration-200
               group-hover:bg-white/10
             "
