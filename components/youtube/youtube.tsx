@@ -28,7 +28,7 @@ const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
         }
 
         const player = new window.YT.Player("youtube-player", {
-          height: "720",
+          height: "100%",
           width: "100%",
           videoId,
           playerVars: {
@@ -73,10 +73,20 @@ const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
   return (
     <div className="flex justify-center bg-black py-8">
       <div
-        id="youtube-player"
-        className="w-full"
-        aria-label="YouTube video player"
-      />
+        className="
+        relative
+        w-full
+        aspect-video
+        max-h-[450px]
+        sm:max-h-none
+        "
+      >
+        <div
+          id="youtube-player"
+          className="absolute inset-0 w-full h-full"
+          aria-label="YouTube video player"
+        />
+      </div>
     </div>
   );
 };

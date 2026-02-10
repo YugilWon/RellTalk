@@ -6,7 +6,7 @@ export default function MovieList({ movies }: { movies: Movie[] }) {
   return (
     <ul
       className="
-     grid grid-cols-3
+     grid grid-cols-2
      sm:grid-cols-3
      md:grid-cols-4
      lg:grid-cols-5
