@@ -28,29 +28,22 @@ export default function CommentCard({
   };
 
   return (
-    <li className="bg-neutral-900 rounded-lg p-4 text-sm flex flex-col">
+    <li className="bg-neutral-900 rounded-xl p-3 md:p-4 flex flex-col">
       {editing && user && comment.userId === user.id ? (
         <>
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
             className="w-full h-24 resize-none bg-neutral-800 rounded-lg p-3
-                       text-sm text-gray-100 focus:outline-none"
+                   text-xs md:text-sm text-gray-100 focus:outline-none"
           />
-          <div className="flex gap-3 mt-2 text-xs text-gray-400">
+          <div className="flex gap-4 mt-2 text-[11px] md:text-xs text-gray-400">
             <button
               onClick={() => {
                 if (window.confirm("댓글을 수정하시겠습니까?")) {
                   updateMutation.mutate(
-                    {
-                      id: comment.id,
-                      content: editContent,
-                    },
-                    {
-                      onSuccess: () => {
-                        setEditing(false);
-                      },
-                    },
+                    { id: comment.id, content: editContent },
+                    { onSuccess: () => setEditing(false) },
                   );
                 }
               }}
@@ -71,25 +64,33 @@ export default function CommentCard({
         </>
       ) : (
         <>
+          {/* 프로필 영역 */}
           <div className="flex items-center gap-2 mb-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={comment.avatarUrl}
               alt={comment.nickname}
-              className="w-8 h-8 rounded-full"
+              className="w-7 h-7 md:w-8 md:h-8 rounded-full"
             />
-            <p className="font-bold text-gray-100">{comment.nickname}</p>
+            <p className="font-semibold text-sm md:text-base text-gray-100">
+              {comment.nickname}
+            </p>
           </div>
 
-          <p className="text-gray-200 mb-2">{comment.content}</p>
+          {/* 댓글 내용 */}
+          <p className="text-xs md:text-sm text-gray-200 leading-relaxed mb-2">
+            {comment.content}
+          </p>
 
-          <div className="flex items-center justify-between text-xs text-gray-400">
+          {/* 하단 메타 영역 */}
+          <div className="flex items-center justify-between text-[11px] md:text-xs text-gray-400">
             <span>
               {new Date(comment.createdAt).toLocaleString()}
-              {isEdited && <span className="ml-1">(수정됨)</span>}
+              {isEdited && <span className="ml-1 opacity-70">(수정됨)</span>}
             </span>
 
             <div className="flex items-center gap-4">
+              {/* 좋아요 버튼 */}
               <button
                 onClick={handleLike}
                 className={`flex items-center gap-1 transition ${
@@ -98,12 +99,13 @@ export default function CommentCard({
                     : "hover:text-white text-gray-400"
                 }`}
               >
-                <span className="text-base">
+                <span className="text-base md:text-lg">
                   {comment.isLiked ? "❤️" : "🤍"}
                 </span>
                 <span>{comment.likeCount ?? 0}</span>
               </button>
 
+              {/* 수정 삭제 */}
               {user && comment.userId === user.id && (
                 <div className="flex gap-3">
                   <button
