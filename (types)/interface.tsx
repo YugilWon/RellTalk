@@ -55,7 +55,13 @@ export type CommentData = {
   userId: string;
   nickname?: string;
   avatarUrl?: string;
+  targetType: CommentTargetType;
 };
+
+export interface CommentWithLike extends CommentData {
+  isLiked: boolean;
+  likeCount: number;
+}
 
 export type UserData = {
   id: string;
@@ -63,8 +69,10 @@ export type UserData = {
   avatarUrl?: string;
 };
 
+export type LikeTargetType = "comment" | "movie" | "post";
+
 export type CommentCardProps = {
-  comment: CommentData;
+  comment: CommentWithLike;
   user?: UserData;
   updateMutation: UseMutationResult<
     unknown,
@@ -73,4 +81,16 @@ export type CommentCardProps = {
     unknown
   >;
   deleteMutation: UseMutationResult<unknown, unknown, string, unknown>;
+  likeMutation: UseMutationResult<
+    void,
+    Error,
+    { targetId: string; isLiked: boolean },
+    { previousData: any[] } | undefined
+  >;
+};
+
+export type ToggleLikePayload = {
+  targetId: string;
+  isLiked: boolean;
+  targetType: LikeTargetType;
 };

@@ -47,7 +47,7 @@ const SideBar = () => {
           ${isHovered ? "h-24" : "h-20"}`}
       >
         {isHovered ? (
-          <div className="absolute w-full flex justify-center animate-fadeIn scale-90">
+          <div className="absolute w-full flex justify-center ">
             <Logo />
           </div>
         ) : (
@@ -84,7 +84,7 @@ const SideBar = () => {
                               rounded-lg shadow-sm transition-colors"
               />
               {isHovered && (
-                <span className="ml-4 font-medium whitespace-nowrap animate-slideRight">
+                <span className="ml-4 font-medium whitespace-nowrap">
                   {menu}
                 </span>
               )}

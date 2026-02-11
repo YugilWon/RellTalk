@@ -14,10 +14,11 @@ import {
 export const useComments = (
   targetId: string,
   targetType: CommentTargetType,
+  userId?: string,
 ) => {
   return useQuery({
-    queryKey: ["comments", targetId, targetType],
-    queryFn: () => fetchComments({ targetId, targetType }),
+    queryKey: ["comments", targetId, targetType, userId],
+    queryFn: () => fetchComments({ targetId, targetType, userId }),
     enabled: !!targetId,
   });
 };

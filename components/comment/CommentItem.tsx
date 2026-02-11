@@ -8,11 +8,24 @@ export default function CommentCard({
   user,
   updateMutation,
   deleteMutation,
+  likeMutation,
 }: CommentCardProps) {
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
 
   const isEdited = comment.updatedAt !== comment.createdAt;
+
+  const handleLike = () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    likeMutation.mutate({
+      targetId: comment.id,
+      isLiked: comment.isLiked ?? false,
+    });
+  };
 
   return (
     <li className="bg-neutral-900 rounded-lg p-4 text-sm flex flex-col">
@@ -36,7 +49,6 @@ export default function CommentCard({
                     {
                       onSuccess: () => {
                         setEditing(false);
-                        setEditContent("");
                       },
                     },
                   );
@@ -77,29 +89,45 @@ export default function CommentCard({
               {isEdited && <span className="ml-1">(수정됨)</span>}
             </span>
 
-            {user && comment.userId === user.id && (
-              <div className="flex gap-3">
-                <button
-                  onClick={() => {
-                    setEditing(true);
-                    setEditContent(comment.content);
-                  }}
-                  className="hover:text-white transition"
-                >
-                  수정
-                </button>
-                <button
-                  onClick={() => {
-                    if (window.confirm("댓글을 삭제하시겠습니까?")) {
-                      deleteMutation.mutate(comment.id);
-                    }
-                  }}
-                  className="hover:text-white transition"
-                >
-                  삭제
-                </button>
-              </div>
-            )}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleLike}
+                className={`flex items-center gap-1 transition ${
+                  comment.isLiked
+                    ? "text-red-500"
+                    : "hover:text-white text-gray-400"
+                }`}
+              >
+                <span className="text-base">
+                  {comment.isLiked ? "❤️" : "🤍"}
+                </span>
+                <span>{comment.likeCount ?? 0}</span>
+              </button>
+
+              {user && comment.userId === user.id && (
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setEditing(true);
+                      setEditContent(comment.content);
+                    }}
+                    className="hover:text-white transition"
+                  >
+                    수정
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (window.confirm("댓글을 삭제하시겠습니까?")) {
+                        deleteMutation.mutate(comment.id);
+                      }
+                    }}
+                    className="hover:text-white transition"
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </>
       )}

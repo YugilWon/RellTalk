@@ -1,12 +1,16 @@
 import { supabase } from "@/utils/supabase/client";
 import { CommentTargetType } from "@/(types)/interface";
 
+import { fetchLikes } from "./likes";
+
 export async function fetchComments({
   targetId,
   targetType,
+  userId,
 }: {
   targetId: string;
   targetType: CommentTargetType;
+  userId?: string;
 }) {
   const { data, error } = await supabase
     .from("comments")
@@ -29,12 +33,27 @@ export async function fetchComments({
     .order("created_at", { ascending: false });
 
   if (error) throw error;
+  if (!data) return [];
+
+  const commentIds = data.map((c) => c.id);
+
+  const likes = await fetchLikes(commentIds, "comment");
+
+  const likeMap = new Map<string, string[]>();
+
+  likes.forEach((like) => {
+    if (!likeMap.has(like.target_id)) {
+      likeMap.set(like.target_id, []);
+    }
+    likeMap.get(like.target_id)!.push(like.user_id);
+  });
 
   return data.map((comment) => {
-    // profiles가 배열로 들어오므로
     const profile = Array.isArray(comment.profiles)
       ? comment.profiles[0]
       : comment.profiles;
+
+    const likeUsers = likeMap.get(comment.id) ?? [];
 
     return {
       id: comment.id,
@@ -45,6 +64,9 @@ export async function fetchComments({
       nickname: profile?.nickname || "익명",
       avatarUrl: profile?.avatar_url || "기본이미지경로",
       targetType: comment.target_type,
+
+      likeCount: likeUsers.length,
+      isLiked: userId ? likeUsers.includes(userId) : false,
     };
   });
 }

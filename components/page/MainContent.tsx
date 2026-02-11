@@ -5,13 +5,13 @@ import { isHoveredState } from "@/components/recoil/recoilState";
 import TrailerSection from "./TrailerSection";
 
 export default function MainContent() {
-  const isHovered = useRecoilValue(isHoveredState);
+  const isSideBarOpen = useRecoilValue(isHoveredState);
 
   return (
     <div
-      className={`flex-1 transition-margin duration-300 ${
-        isHovered ? "ml-64" : "ml-16"
-      } p-4`}
+      className={`flex-1 transition-all duration-300 ease-out ${
+        isSideBarOpen ? "pl-64" : "pl-16"
+      }`}
     >
       <TrailerSection />
     </div>
