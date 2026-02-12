@@ -37,6 +37,7 @@ export default async function DetailPage({
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-2 sm:mb-4">
             {movie.title}
           </h1>
+
           <p className="text-gray-300 text-sm sm:text-base max-w-3xl line-clamp-4 sm:line-clamp-3">
             {movie.overview}
           </p>

@@ -16,20 +16,28 @@ export const fetchLikes = async (
   return data;
 };
 
-export const likeComment = async (commentId: string, userId: string) => {
+export const likeTarget = async (
+  targetId: string,
+  targetType: "comment" | "movie" | "post",
+  userId: string,
+) => {
   const { error } = await supabase.from("likes").insert({
-    target_id: commentId,
-    target_type: "comment",
+    target_id: targetId,
+    target_type: targetType,
     user_id: userId,
   });
 
   if (error) throw error;
 };
 
-export const unlikeComment = async (commentId: string, userId: string) => {
+export const unlikeTarget = async (
+  targetId: string,
+  targetType: "comment" | "movie" | "post",
+  userId: string,
+) => {
   const { error } = await supabase.from("likes").delete().match({
-    target_id: commentId,
-    target_type: "comment",
+    target_id: targetId,
+    target_type: targetType,
     user_id: userId,
   });
 

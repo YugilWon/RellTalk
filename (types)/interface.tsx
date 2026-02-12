@@ -56,6 +56,7 @@ export type CommentData = {
   nickname?: string;
   avatarUrl?: string;
   targetType: CommentTargetType;
+  targetId: string;
 };
 
 export interface CommentWithLike extends CommentData {
@@ -75,12 +76,12 @@ export type CommentCardProps = {
   comment: CommentWithLike;
   user?: UserData;
   updateMutation: UseMutationResult<
-    unknown,
-    unknown,
+    void,
+    Error,
     UpdateCommentPayload,
-    unknown
+    { previousComments?: any[]; queryKey: unknown[] } | undefined
   >;
-  deleteMutation: UseMutationResult<unknown, unknown, string, unknown>;
+  deleteMutation: UseMutationResult<void, Error, string>;
   likeMutation: UseMutationResult<
     void,
     Error,
@@ -94,3 +95,30 @@ export type ToggleLikePayload = {
   isLiked: boolean;
   targetType: LikeTargetType;
 };
+
+export interface LikeButtonProps {
+  targetId: string;
+  targetType: LikeTargetType;
+  isLiked: boolean;
+  likeCount: number;
+  queryKey: unknown[];
+  userId?: string;
+}
+
+export interface EditModeProps {
+  comment: CommentWithLike;
+  editContent: string;
+  setEditContent: React.Dispatch<React.SetStateAction<string>>;
+  updateMutation: UseMutationResult<void, Error, UpdateCommentPayload>;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface ViewModeProps {
+  comment: CommentWithLike;
+  user?: UserData;
+  isEdited: boolean;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  setEditContent: React.Dispatch<React.SetStateAction<string>>;
+  deleteMutation: UseMutationResult<void, Error, string>;
+  handleLike: () => void;
+}

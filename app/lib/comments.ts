@@ -21,6 +21,7 @@ export async function fetchComments({
       created_at,
       updated_at,
       user_id,
+      target_id,
       target_type,
       profiles:comments_user_id_profiles_fkey (
         nickname,
@@ -64,6 +65,7 @@ export async function fetchComments({
       nickname: profile?.nickname || "익명",
       avatarUrl: profile?.avatar_url || "기본이미지경로",
       targetType: comment.target_type,
+      targetId: comment.target_id,
 
       likeCount: likeUsers.length,
       isLiked: userId ? likeUsers.includes(userId) : false,

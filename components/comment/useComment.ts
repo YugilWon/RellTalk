@@ -80,9 +80,13 @@ export const useUpdateComment = (
 ) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<
+    void,
+    Error,
+    UpdateCommentPayload,
+    { previousComments?: any[]; queryKey: unknown[] } | undefined // context
+  >({
     mutationFn: (data: UpdateCommentPayload) => updateComment(data),
-
     onMutate: async (updatedComment) => {
       const queryKey = ["comments", targetId, targetType];
       await queryClient.cancelQueries({ queryKey });
@@ -124,7 +128,7 @@ export const useDeleteComment = (
 ) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<void, Error, string>({
     mutationFn: (id: string) => deleteComment(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
