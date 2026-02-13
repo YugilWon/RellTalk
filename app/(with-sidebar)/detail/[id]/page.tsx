@@ -2,6 +2,7 @@ import Image from "next/image";
 import Comments from "@/components/comment/Comment";
 import { getMovie } from "@/app/lib/movies";
 import { getYoutubeTrailerId } from "@/app/lib/youtube";
+import MovieLike from "@/components/like/MovieLike";
 
 export default async function DetailPage({
   params,
@@ -37,6 +38,8 @@ export default async function DetailPage({
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-2 sm:mb-4">
             {movie.title}
           </h1>
+
+          <MovieLike movieId={params.id} />
 
           <p className="text-gray-300 text-sm sm:text-base max-w-3xl line-clamp-4 sm:line-clamp-3">
             {movie.overview}

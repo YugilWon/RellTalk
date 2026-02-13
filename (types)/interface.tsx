@@ -122,3 +122,8 @@ export interface ViewModeProps {
   deleteMutation: UseMutationResult<void, Error, string>;
   handleLike: () => void;
 }
+
+export type LikeSectionProps = {
+  targetId: string;
+  targetType: "movie" | "post";
+};
