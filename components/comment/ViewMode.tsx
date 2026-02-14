@@ -10,6 +10,8 @@ function ViewMode({
   setEditing,
   setEditContent,
   deleteMutation,
+  likeCount,
+  isLiked,
 }: ViewModeProps) {
   const handleDelete = () => {
     if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
@@ -49,9 +51,8 @@ function ViewMode({
           <LikeButton
             targetId={comment.id}
             targetType="comment"
-            isLiked={comment.isLiked ?? false}
-            likeCount={comment.likeCount ?? 0}
-            queryKey={["comments", comment.targetId]}
+            isLiked={isLiked}
+            likeCount={likeCount}
             userId={user?.id}
           />
 

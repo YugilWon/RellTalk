@@ -10,7 +10,6 @@ import {
 import { useUser } from "@/hooks/useUser";
 import { CommentTargetType } from "@/(types)/interface";
 import CommentCard from "./CommentItem";
-import { useToggleLike } from "@/hooks/useLikt";
 
 export default function Comments({
   targetId,
@@ -41,12 +40,6 @@ export default function Comments({
 
   const updateMutation = useUpdateComment(targetId, targetType);
   const deleteMutation = useDeleteComment(targetId, targetType);
-
-  const likeMutation = useToggleLike(
-    ["comments", targetId, targetType],
-    "comment",
-    user?.id,
-  );
 
   return (
     <section className="space-y-6">
@@ -96,7 +89,6 @@ export default function Comments({
               user={currentUser}
               updateMutation={updateMutation}
               deleteMutation={deleteMutation}
-              likeMutation={likeMutation}
             />
           ))}
         </ul>

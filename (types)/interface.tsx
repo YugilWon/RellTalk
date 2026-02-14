@@ -101,7 +101,6 @@ export interface LikeButtonProps {
   targetType: LikeTargetType;
   isLiked: boolean;
   likeCount: number;
-  queryKey: unknown[];
   userId?: string;
 }
 
@@ -121,6 +120,8 @@ export interface ViewModeProps {
   setEditContent: React.Dispatch<React.SetStateAction<string>>;
   deleteMutation: UseMutationResult<void, Error, string>;
   handleLike: () => void;
+  likeCount: number;
+  isLiked: boolean;
 }
 
 export type LikeSectionProps = {

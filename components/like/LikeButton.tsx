@@ -1,17 +1,16 @@
 "use client";
 
 import { useToggleLike } from "@/hooks/useLikt";
-import { LikeTargetType, LikeButtonProps } from "@/(types)/interface";
+import { LikeButtonProps } from "@/(types)/interface";
 
 export default function LikeButton({
   targetId,
   targetType,
   isLiked,
   likeCount,
-  queryKey,
   userId,
 }: LikeButtonProps) {
-  const toggleLike = useToggleLike(queryKey, targetType, userId);
+  const toggleLike = useToggleLike(targetId, targetType, userId);
 
   const handleClick = () => {
     if (!userId) {
@@ -19,10 +18,7 @@ export default function LikeButton({
       return;
     }
 
-    toggleLike.mutate({
-      targetId,
-      isLiked,
-    });
+    toggleLike.mutate(isLiked);
   };
 
   return (
