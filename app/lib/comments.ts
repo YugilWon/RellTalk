@@ -7,10 +7,12 @@ export async function fetchComments({
   targetId,
   targetType,
   userId,
+  parentId,
 }: {
   targetId: string;
   targetType: CommentTargetType;
   userId?: string;
+  parentId: string | null;
 }) {
   const { data, error } = await supabase
     .from("comments")
@@ -23,6 +25,8 @@ export async function fetchComments({
       user_id,
       target_id,
       target_type,
+      parent_id,
+      deleted,
       profiles:comments_user_id_profiles_fkey (
         nickname,
         avatar_url
@@ -66,6 +70,8 @@ export async function fetchComments({
       avatarUrl: profile?.avatar_url || "기본이미지경로",
       targetType: comment.target_type,
       targetId: comment.target_id,
+      parentId: comment.parent_id ?? null,
+      deleted: comment.deleted ?? false,
 
       likeCount: likeUsers.length,
       isLiked: userId ? likeUsers.includes(userId) : false,
@@ -77,10 +83,12 @@ export async function createComment({
   targetId,
   targetType,
   content,
+  parentId,
 }: {
   targetId: string;
   targetType: CommentTargetType;
   content: string;
+  parentId?: string | null;
 }) {
   const { data, error } = await supabase
     .from("comments")
@@ -88,6 +96,8 @@ export async function createComment({
       target_id: targetId,
       target_type: targetType,
       content,
+      parent_id: parentId ?? null,
+      deleted: false,
     })
     .select()
     .single();
@@ -112,6 +122,10 @@ export async function updateComment({
 }
 
 export async function deleteComment(id: string) {
-  const { error } = await supabase.from("comments").delete().eq("id", id);
+  const { error } = await supabase
+    .from("comments")
+    .update({ deleted: true })
+    .eq("id", id);
+
   if (error) throw error;
 }

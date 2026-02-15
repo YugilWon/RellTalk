@@ -2,7 +2,7 @@
 
 import LikeButton from "../like/LikeButton";
 import { useUser } from "@/hooks/useUser";
-import { useLikeSummary } from "@/hooks/useLikt";
+import { useLikeSummary } from "@/hooks/useLike";
 
 interface MovieLikeProps {
   movieId: string;

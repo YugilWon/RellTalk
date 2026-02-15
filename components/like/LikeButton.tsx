@@ -1,6 +1,6 @@
 "use client";
 
-import { useToggleLike } from "@/hooks/useLikt";
+import { useToggleLike } from "@/hooks/useLike";
 import { LikeButtonProps } from "@/(types)/interface";
 
 export default function LikeButton({

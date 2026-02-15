@@ -1,6 +1,5 @@
 import React from "react";
 import LikeButton from "../like/LikeButton";
-import Image from "next/image";
 import { ViewModeProps } from "@/(types)/interface";
 
 function ViewMode({
@@ -12,6 +11,7 @@ function ViewMode({
   deleteMutation,
   likeCount,
   isLiked,
+  onReply,
 }: ViewModeProps) {
   const handleDelete = () => {
     if (!window.confirm("댓글을 삭제하시겠습니까?")) return;
@@ -55,6 +55,10 @@ function ViewMode({
             likeCount={likeCount}
             userId={user?.id}
           />
+
+          <button onClick={onReply} className="hover:text-white transition">
+            답글
+          </button>
 
           {user && comment.userId === user.id && (
             <div className="flex gap-3">

@@ -34,12 +34,14 @@ export interface Comment {
   avatarUrl: string;
   updatedAt: string;
   targetType: CommentTargetType;
+  parentId: string | null;
 }
 
 export type CreateCommentPayload = {
   targetId: string;
   targetType: "movie" | "post";
   content: string;
+  parentId?: string | null;
 };
 
 export type UpdateCommentPayload = {
@@ -57,6 +59,8 @@ export type CommentData = {
   avatarUrl?: string;
   targetType: CommentTargetType;
   targetId: string;
+  parentId: string;
+  deleted?: boolean;
 };
 
 export interface CommentWithLike extends CommentData {
@@ -88,6 +92,7 @@ export type CommentCardProps = {
     { targetId: string; isLiked: boolean },
     { previousData: any[] } | undefined
   >;
+  createMutation: UseMutationResult<unknown, Error, CreateCommentPayload>;
 };
 
 export type ToggleLikePayload = {
@@ -122,9 +127,17 @@ export interface ViewModeProps {
   handleLike: () => void;
   likeCount: number;
   isLiked: boolean;
+  onReply: () => void;
 }
 
 export type LikeSectionProps = {
   targetId: string;
   targetType: "movie" | "post";
 };
+
+export interface CommentFormProps {
+  onSubmit: (content: string) => void;
+  isPending?: boolean;
+  placeholder?: string;
+  autoFocus?: boolean;
+}

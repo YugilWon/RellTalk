@@ -14,10 +14,11 @@ import {
 export const useComments = (
   targetId: string,
   targetType: CommentTargetType,
+  parentId: string | null,
   userId?: string,
 ) => {
   return useQuery({
-    queryKey: ["comments", targetId, targetType, userId],
+    queryKey: ["comments", targetId, targetType, userId, parentId],
     queryFn: () => fetchComments({ targetId, targetType, userId }),
     enabled: !!targetId,
   });
@@ -50,12 +51,27 @@ export const useCreateComment = (
         nickname: user.nickname || "알 수 없음",
         avatarUrl: user.avatarUrl || "",
         targetType,
+        parentId: newCommentData.parentId ?? null,
       };
 
-      queryClient.setQueryData(queryKey, (old: any[] | undefined) => [
-        tempComment,
-        ...(old ?? []),
-      ]);
+      queryClient.setQueryData(queryKey, (old: any[] | undefined) => {
+        if (!old) return [tempComment];
+
+        if (!newCommentData.parentId) {
+          return [tempComment, ...old];
+        }
+        //이 부분이 답글이면 부모 댓글 아래로 렌더
+        const parentIndex = old.findIndex(
+          (c) => c.id === newCommentData.parentId,
+        );
+
+        if (parentIndex === -1) return old;
+
+        const newList = [...old];
+        newList.splice(parentIndex + 1, 0, tempComment);
+
+        return newList;
+      });
 
       return { previousComments, queryKey };
     },
