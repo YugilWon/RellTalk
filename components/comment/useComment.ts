@@ -19,7 +19,7 @@ export const useComments = (
 ) => {
   return useQuery({
     queryKey: ["comments", targetId, targetType, userId, parentId],
-    queryFn: () => fetchComments({ targetId, targetType, userId }),
+    queryFn: () => fetchComments({ targetId, targetType, userId, parentId }),
     enabled: !!targetId,
   });
 };
