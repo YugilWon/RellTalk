@@ -1,14 +1,19 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Login from "../auth/logIn";
+import { useRouter } from "next/navigation";
 import { useRecoilState } from "recoil";
 import { isHoveredState } from "../recoil/recoilState";
-import Logo from "./Logo";
+import Logo from "../ui/Logo";
+import Login from "../auth/logIn";
+import { useAuth } from "../auth/useAuth";
 
 const SideBar = () => {
   const [isHovered, setIsHovered] = useRecoilState(isHoveredState);
   const [isDesktop, setIsDesktop] = useState(false);
+  const router = useRouter();
+  const { session } = useAuth();
+  const isLoggedIn = !!session;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -19,6 +24,19 @@ const SideBar = () => {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
+  const handleMenuClick = (menu: string) => {
+    if (menu === "마이 페이지") {
+      if (!isLoggedIn) {
+        alert("로그인이 필요합니다!");
+        return;
+      }
+      router.push("/mypage");
+    }
+    if (menu === "추천작") {
+      router.push("/recommend");
+    }
+  };
 
   return (
     <div
@@ -47,7 +65,7 @@ const SideBar = () => {
           ${isHovered ? "h-24" : "h-20"}`}
       >
         {isHovered ? (
-          <div className="absolute w-full flex justify-center ">
+          <div className="absolute w-full flex justify-center">
             <Logo />
           </div>
         ) : (
@@ -72,12 +90,13 @@ const SideBar = () => {
 
       <nav className="flex-1 px-3">
         <ul className="space-y-1">
-          {["마이 페이지", "추천작", "고객센터"].map((menu) => (
+          {["마이 페이지", "추천작"].map((menu) => (
             <li
               key={menu}
               className="group flex items-center p-3 rounded-xl
                          hover:bg-indigo-600/20 hover:text-white
                          transition-all duration-200 cursor-pointer"
+              onClick={() => handleMenuClick(menu)}
             >
               <div
                 className="w-6 h-6 bg-gray-700 group-hover:bg-indigo-500

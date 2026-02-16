@@ -1,7 +1,7 @@
 import { getPopularMovies } from "../lib/movies";
 import { getYoutubeTrailerId } from "../lib/youtube";
-import MainLayout from "@/components/page/MainLayOut";
-import MoviePage from "@/components/page/MoviePage";
+import MainLayout from "@/components/movie/MainLayOut";
+import MoviePage from "@/components/movie/MoviePage";
 import YoutubePlayer from "@/components/youtube/youtube";
 import GlobalSearch from "@/components/ui/Search";
 

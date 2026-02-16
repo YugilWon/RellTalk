@@ -1,4 +1,4 @@
-import MainLayout from "@/components/page/MainLayOut";
+import MainLayout from "@/components/movie/MainLayOut";
 
 export default function WithSidebarLayout({
   children,
