@@ -10,8 +10,8 @@ const tabs = ["내 정보", "내가 좋아하는 영화", "내 댓글"];
 export default function MyPageLayOut() {
   const [activeTab, setActiveTab] = useState("내 정보");
   const [profile, setProfile] = useState<{
-    nickname: string;
-    avatarUrl: string;
+    nickname: string | null;
+    avatarUrl: string | null;
   } | null>(null);
   const [user, setUser] = useState<{ id: string } | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,8 +63,8 @@ export default function MyPageLayOut() {
         {activeTab === "내 정보" && user && profile && (
           <ProfileInfo
             userId={user.id}
-            nickname={profile.nickname}
-            avatarUrl={profile.avatarUrl}
+            nickname={profile.nickname ?? "닉네임을 설정해주세요"}
+            avatarUrl={profile.avatarUrl ?? "/default-avatar.png"}
           />
         )}
         {/* {activeTab === "좋아요 영화" && <LikedMovies />}
