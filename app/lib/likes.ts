@@ -43,3 +43,17 @@ export const unlikeTarget = async (
 
   if (error) throw error;
 };
+
+export async function fetchLikedMovies(userId: string) {
+  const { data, error } = await supabase
+    .from("likes")
+    .select("target_id")
+    .eq("user_id", userId)
+    .eq("target_type", "movie");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data.map((item) => item.target_id);
+}
