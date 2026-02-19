@@ -1,17 +1,30 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useRecoilState } from "recoil";
 import { isHoveredState } from "../recoil/recoilState";
 import Logo from "../ui/Logo";
 import Login from "../auth/logIn";
 import { useAuth } from "../auth/useAuth";
 
+interface Menu {
+  name: string;
+  path: string;
+  requireAuth?: boolean;
+}
+
+const menus: Menu[] = [
+  { name: "마이 페이지", path: "/mypage", requireAuth: true },
+  { name: "추천작", path: "/recommend" },
+  { name: "자유 게시판", path: "/post" },
+];
+
 const SideBar = () => {
   const [isHovered, setIsHovered] = useRecoilState(isHoveredState);
   const [isDesktop, setIsDesktop] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const { session } = useAuth();
   const isLoggedIn = !!session;
 
@@ -25,17 +38,12 @@ const SideBar = () => {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  const handleMenuClick = (menu: string) => {
-    if (menu === "마이 페이지") {
-      if (!isLoggedIn) {
-        alert("로그인이 필요합니다!");
-        return;
-      }
-      router.push("/mypage");
+  const handleMenuClick = (menu: Menu) => {
+    if (menu.requireAuth && !isLoggedIn) {
+      alert("로그인이 필요합니다!");
+      return;
     }
-    if (menu === "추천작") {
-      router.push("/recommend");
-    }
+    router.push(menu.path);
   };
 
   return (
@@ -90,25 +98,37 @@ const SideBar = () => {
 
       <nav className="flex-1 px-3">
         <ul className="space-y-1">
-          {["마이 페이지", "추천작"].map((menu) => (
-            <li
-              key={menu}
-              className="group flex items-center p-3 rounded-xl
-                         hover:bg-indigo-600/20 hover:text-white
-                         transition-all duration-200 cursor-pointer"
-              onClick={() => handleMenuClick(menu)}
-            >
-              <div
-                className="w-6 h-6 bg-gray-700 group-hover:bg-indigo-500
-                              rounded-lg shadow-sm transition-colors"
-              />
-              {isHovered && (
-                <span className="ml-4 font-medium whitespace-nowrap">
-                  {menu}
-                </span>
-              )}
-            </li>
-          ))}
+          {menus.map((menu) => {
+            const isActive = pathname === menu.path;
+
+            return (
+              <li
+                key={menu.name}
+                className={`group flex items-center p-3 rounded-xl
+                  transition-all duration-200 cursor-pointer
+                  ${
+                    isActive
+                      ? "bg-indigo-600/30 text-white"
+                      : "hover:bg-indigo-600/20 hover:text-white"
+                  }`}
+                onClick={() => handleMenuClick(menu)}
+              >
+                <div
+                  className={`w-6 h-6 rounded-lg shadow-sm transition-colors
+                    ${
+                      isActive
+                        ? "bg-indigo-500"
+                        : "bg-gray-700 group-hover:bg-indigo-500"
+                    }`}
+                />
+                {isHovered && (
+                  <span className="ml-4 font-medium whitespace-nowrap">
+                    {menu.name}
+                  </span>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </nav>
 
