@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import ProfileInfo from "./ProfileInfo";
 import { fetchUser } from "@/app/lib/user";
 import { getProfileInfo } from "@/app/lib/profileinfo";
+import LikedMovies from "./LikedMovies";
 
 const tabs = ["내 정보", "내가 좋아하는 영화", "내 댓글"];
 
@@ -67,8 +68,10 @@ export default function MyPageLayOut() {
             avatarUrl={profile.avatarUrl ?? "/default-avatar.png"}
           />
         )}
-        {/* {activeTab === "좋아요 영화" && <LikedMovies />}
-        {activeTab === "내 댓글" && <MyComments />} */}
+        {activeTab === "내가 좋아하는 영화" && user && (
+          <LikedMovies userId={user.id} />
+        )}
+        {/* {activeTab === "내 댓글" && <MyComments />} */}
       </div>
     </div>
   );
