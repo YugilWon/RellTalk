@@ -82,3 +82,5 @@ comment/
 CommentCard.tsx
 
 기능 단위로 구조를 분리하여 책임을 명확히 했습니다.
+
+잠시 확인용
