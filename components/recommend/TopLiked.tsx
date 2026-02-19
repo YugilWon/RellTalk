@@ -6,7 +6,7 @@ import { getMovie } from "@/app/lib/movies";
 import Image from "next/image";
 import Link from "next/link";
 import { Movie } from "@/(types)/interface";
-import NoImage from "@/public/assets/no_image.png";
+import NoImage from "@/assets/NoImage.png";
 
 export default function TopLiked() {
   const [movies, setMovies] = useState<Movie[]>([]);
