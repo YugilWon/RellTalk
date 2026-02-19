@@ -56,3 +56,16 @@ export async function getPopularMovies(): Promise<Movie[]> {
 
   return Array.from(new Map(detailedMovies.map((m) => [m.id, m])).values());
 }
+
+export async function getPopularMoviesByPage(page: number): Promise<Movie[]> {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/popular?language=ko-KR&api_key=${API_KEY}&page=${page}`,
+    { next: { revalidate: 60 } },
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch popular movies");
+
+  const data = await res.json();
+
+  return data.results.map(normalizeMovie);
+}
