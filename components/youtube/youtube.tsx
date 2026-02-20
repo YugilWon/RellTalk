@@ -1,5 +1,8 @@
 "use client";
-import { useEffect } from "react";
+
+import { useState } from "react";
+import Image from "next/image";
+import PlayIcon from "@/assets/PlayIcon.png";
 
 export type YoutubePlayerProps = {
   videoId?: string | null;
@@ -13,70 +16,74 @@ declare global {
 }
 
 const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
-  useEffect(() => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const loadYouTubeAPI = () => {
     if (!videoId) return;
 
-    const isMobile =
-      typeof window !== "undefined" &&
-      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const createPlayer = () => {
+      const playerContainer = document.getElementById("youtube-player");
+      if (!playerContainer) return;
 
-    const loadYouTubeAPI = () => {
-      const createPlayer = () => {
-        const playerContainer = document.getElementById("youtube-player");
-        if (playerContainer) {
-          playerContainer.innerHTML = "";
-        }
-
-        const player = new window.YT.Player("youtube-player", {
-          height: "720",
-          width: "100%",
-          videoId,
-          playerVars: {
-            autoplay: isMobile ? 0 : 1,
-            controls: 1,
-            modestbranding: 1,
-            rel: 1,
-            showinfo: 0,
-          },
-          events: {
-            onStateChange: (event: any) => {
-              if (event.data === window.YT.PlayerState.ENDED) {
-                player.seekTo(0);
-                player.playVideo();
-              }
-            },
-          },
-        });
-      };
-
-      if (window.YT && window.YT.Player) {
-        createPlayer();
-      } else {
-        const tag = document.createElement("script");
-        tag.src = "https://www.youtube.com/iframe_api";
-        tag.async = true;
-        document.body.appendChild(tag);
-
-        window.onYouTubeIframeAPIReady = createPlayer;
-      }
+      playerContainer.innerHTML = "";
+      new window.YT.Player("youtube-player", {
+        height: "720",
+        width: "100%",
+        videoId,
+        playerVars: {
+          autoplay: 1,
+          controls: 1,
+          modestbranding: 1,
+          rel: 0,
+          showinfo: 0,
+        },
+      });
     };
 
-    if ("requestIdleCallback" in window) {
-      (window as any).requestIdleCallback(loadYouTubeAPI);
+    if (window.YT && window.YT.Player) {
+      createPlayer();
     } else {
-      setTimeout(loadYouTubeAPI, 2000);
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      tag.async = true;
+      document.body.appendChild(tag);
+      window.onYouTubeIframeAPIReady = createPlayer;
     }
-  }, [videoId]);
+  };
+
+  const handlePlayClick = () => {
+    setIsPlaying(true);
+    setTimeout(() => loadYouTubeAPI(), 100);
+  };
 
   if (!videoId) return null;
 
   return (
-    <div className="flex justify-center bg-black py-8">
-      <div
-        id="youtube-player"
-        className="w-full"
-        aria-label="YouTube video player"
-      />
+    <div className="relative w-full max-w-[1280px] mx-auto">
+      {!isPlaying ? (
+        <div
+          className="relative cursor-pointer w-full h-[720px] rounded-xl overflow-hidden"
+          onClick={handlePlayClick}
+        >
+          <div className="absolute inset-0 bg-black" />
+
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Image
+              src={PlayIcon}
+              alt="Play Button"
+              width={80}
+              height={80}
+              className="opacity-80 hover:opacity-100
+                         md:w-[150px] md:h-[150px] lg:w-[200px] lg:h-[200px]"
+            />
+          </div>
+        </div>
+      ) : (
+        <div
+          id="youtube-player"
+          className="w-full h-[720px] rounded-xl overflow-hidden"
+        />
+      )}
     </div>
   );
 };
