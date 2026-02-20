@@ -6,9 +6,13 @@ import Link from "next/link";
 import { Movie } from "@/(types)/interface";
 import NoImage from "@/assets/NoImage.png";
 
-export default function TMDBPopular() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [page, setPage] = useState(1);
+interface TMDBPopularProps {
+  initialMovies?: Movie[];
+}
+
+export default function TMDBPopular({ initialMovies = [] }: TMDBPopularProps) {
+  const [movies, setMovies] = useState<Movie[]>(initialMovies);
+  const [page, setPage] = useState(initialMovies.length ? 2 : 1);
   const [More, setMore] = useState(true);
   const [imageError, setImageError] = useState<Record<number, boolean>>({});
   const observerRef = useRef<HTMLDivElement | null>(null);
