@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { Post } from "@/(types)/interface";
+import DOMPurify from "dompurify";
 
 interface Props {
   post: Post;
@@ -11,6 +12,8 @@ export default function PostDetail({ post }: Props) {
   const author = Array.isArray(post.profiles)
     ? post.profiles[0]
     : post.profiles;
+
+  const cleanContent = DOMPurify.sanitize(post.content);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
@@ -37,7 +40,7 @@ export default function PostDetail({ post }: Props) {
 
         <div
           className="prose prose-invert max-w-full break-words text-gray-200"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: cleanContent }}
         />
       </div>
     </div>

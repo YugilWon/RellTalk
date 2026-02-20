@@ -1,4 +1,5 @@
 import PostDetail from "@/components/post/PostDetail";
+import { notFound } from "next/navigation";
 import { getPostById } from "@/app/lib/post";
 
 interface PageProps {
@@ -7,7 +8,9 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const post = await getPostById(params.id);
-  if (!post) return null;
+  if (!post) {
+    notFound();
+  }
 
   return <PostDetail post={post} />;
 }

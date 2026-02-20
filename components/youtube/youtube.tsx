@@ -31,7 +31,7 @@ const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
         width: "100%",
         videoId,
         playerVars: {
-          autoplay: 0,
+          autoplay: 1,
           controls: 1,
           modestbranding: 1,
           rel: 0,

@@ -47,25 +47,36 @@ export default function Write() {
 
     const content = editor.getHTML();
 
-    const res = await fetch("/api/post", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, content }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || !data) {
-      alert("저장 실패");
+    if (!title.trim() || !content.trim()) {
+      alert("제목과 내용을 입력해주세요.");
       return;
     }
 
-    const newPostId = data[0]?.id;
-    if (newPostId) {
-      alert("저장 완료");
-      router.push(`/post/${newPostId}`);
-    } else {
-      alert("저장 후 ID를 가져오지 못했습니다.");
+    try {
+      const res = await fetch("/api/post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        alert(`저장 실패: ${errorData.error ?? res.statusText}`);
+        return;
+      }
+
+      const data = await res.json();
+      const newPostId = data[0]?.id;
+
+      if (newPostId) {
+        alert("저장 완료");
+        router.push(`/post/${newPostId}`);
+      } else {
+        alert("저장 후 ID를 가져오지 못했습니다.");
+      }
+    } catch (err) {
+      console.error("게시글 저장 중 오류:", err);
+      alert("게시글 저장 중 오류가 발생했습니다.");
     }
   };
 

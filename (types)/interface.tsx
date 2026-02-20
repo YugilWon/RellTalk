@@ -147,9 +147,15 @@ export interface Post {
   title: string;
   content: string;
   created_at: string;
-  profiles: {
-    id: string;
-    nickname: string;
-    avatar_url: string;
-  }[];
+  profiles:
+    | {
+        id: string;
+        nickname: string;
+        avatar_url: string;
+      }
+    | {
+        id: string;
+        nickname: string;
+        avatar_url: string;
+      }[];
 }
