@@ -6,7 +6,6 @@ import PlayIcon from "@/assets/PlayIcon.png";
 
 export type YoutubePlayerProps = {
   videoId?: string | null;
-  thumbnail?: string | null;
 };
 
 declare global {
@@ -16,7 +15,7 @@ declare global {
   }
 }
 
-const YoutubePlayer = ({ videoId, thumbnail }: YoutubePlayerProps) => {
+const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const loadYouTubeAPI = () => {
