@@ -20,18 +20,24 @@ export default function PostDetail({ post }: Props) {
 
   const { handleEdit, handleDelete } = usePostActions(post.id);
 
+  const isAuthor = user?.id === author?.id;
+
   const cleanContent = DOMPurify.sanitize(post.content, {
     ADD_TAGS: ["iframe"],
     ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"],
-  });
+  })
 
-  const isAuthor = user?.id === author?.id;
+    .replace(
+      /<iframe /g,
+      `<div class="relative w-full aspect-video max-w-full"><iframe class="absolute inset-0 w-full h-full"`,
+    )
+    .replace(/<\/iframe>/g, "</iframe></div>");
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
       <div className="bg-zinc-800 rounded-xl p-6 border border-zinc-700 shadow-md space-y-4">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white break-words">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white break-words">
             {post.title}
           </h1>
 
