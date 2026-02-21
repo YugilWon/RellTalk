@@ -23,7 +23,10 @@ const menus: Menu[] = [
   { name: "자유 게시판", path: "/post" },
 ];
 
-const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
+export default function SideBar({
+  isSidebarOpen,
+  setIsSidebarOpen,
+}: SideBarProps) {
   const [isDesktop, setIsDesktop] = useState(false);
 
   const router = useRouter();
@@ -32,8 +35,7 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
   const isLoggedIn = !!session;
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(hover: hover)");
+    const mq = window.matchMedia("(min-width: 1024px)");
     setIsDesktop(mq.matches);
 
     const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
@@ -47,6 +49,7 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
       alert("로그인이 필요합니다!");
       return;
     }
+
     router.push(menu.path);
 
     if (!isDesktop) {
@@ -59,9 +62,8 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
       {!isDesktop && (
         <button
           className="fixed top-4 left-4 z-50 w-10 h-10 rounded-full
-                     bg-indigo-600 text-white flex items-center justify-center
-                     shadow-lg"
-          onClick={() => setIsSidebarOpen((prev) => !prev)}
+                     bg-indigo-600 text-white flex items-center justify-center shadow-lg"
+          onClick={() => setIsSidebarOpen(true)}
         >
           ☰
         </button>
@@ -76,26 +78,26 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
 
       <aside
         className={`
-    ${isDesktop ? "sticky top-0 self-start" : "fixed top-0 left-0 z-40"}
-    h-screen flex flex-col
-    transition-all duration-300 ease-in-out
-    bg-[#1a1c23] text-gray-300 shadow-2xl
-    ${
-      isDesktop
-        ? isSidebarOpen
-          ? "w-64"
-          : "w-20"
-        : isSidebarOpen
-          ? "w-64"
-          : "w-0"
-    }
-    overflow-hidden
-  `}
+          ${isDesktop ? "sticky top-0" : "fixed top-0 left-0 z-40"}
+          h-screen flex flex-col
+          transition-all duration-300
+          bg-[#1a1c23] text-gray-300 shadow-2xl
+          ${
+            isDesktop
+              ? isSidebarOpen
+                ? "w-64"
+                : "w-20"
+              : isSidebarOpen
+                ? "w-64"
+                : "w-0"
+          }
+          overflow-hidden
+        `}
         onMouseEnter={isDesktop ? () => setIsSidebarOpen(true) : undefined}
         onMouseLeave={isDesktop ? () => setIsSidebarOpen(false) : undefined}
       >
         <div
-          className={`flex items-center justify-center transition-all duration-300 ${
+          className={`flex items-center justify-center transition-all ${
             isSidebarOpen ? "h-24" : "h-20"
           }`}
         >
@@ -108,17 +110,13 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
 
         {isSidebarOpen && (
           <div className="px-4 mt-10">
-            <div className="bg-gray-800/40 rounded-2xl p-4 text-center border border-gray-700/50 shadow-inner">
+            <div className="bg-gray-800/40 rounded-2xl p-4 text-center">
               <Login />
             </div>
           </div>
         )}
 
-        {isSidebarOpen && (
-          <div className="mx-8 border-b border-gray-700/30 my-6" />
-        )}
-
-        <nav className="flex-1 px-3">
+        <nav className="flex-1 px-3 mt-6">
           <ul className="space-y-1">
             {menus.map((menu) => {
               const isActive = pathname === menu.path;
@@ -127,7 +125,7 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
                 <li
                   key={menu.name}
                   onClick={() => handleMenuClick(menu)}
-                  className={`flex items-center p-3 rounded-xl cursor-pointer transition-all duration-200
+                  className={`flex items-center p-3 rounded-xl cursor-pointer transition
                     ${
                       isActive
                         ? "bg-indigo-600/30 text-white"
@@ -135,8 +133,9 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
                     }`}
                 >
                   <div
-                    className={`w-6 h-6 rounded-lg transition-colors
-                      ${isActive ? "bg-indigo-500" : "bg-gray-700"}`}
+                    className={`w-6 h-6 rounded-lg ${
+                      isActive ? "bg-indigo-500" : "bg-gray-700"
+                    }`}
                   />
                   {isSidebarOpen && (
                     <span className="ml-4 font-medium whitespace-nowrap">
@@ -150,15 +149,11 @@ const SideBar = ({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) => {
         </nav>
 
         {isSidebarOpen && (
-          <div className="p-6">
-            <div className="pt-4 border-t border-gray-700/50 text-[10px] text-gray-500 text-center tracking-widest uppercase">
-              © 2026 ReelTalk
-            </div>
+          <div className="p-6 text-center text-xs text-gray-500 border-t border-gray-700/40">
+            © 2026 ReelTalk
           </div>
         )}
       </aside>
     </>
   );
-};
-
-export default SideBar;
+}

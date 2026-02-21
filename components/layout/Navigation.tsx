@@ -4,7 +4,11 @@ import Link from "next/link";
 export default function Navigation() {
   return (
     <nav>
-      <ul></ul>
+      <ul>
+        <li>
+          <Link href="/">Home</Link>
+        </li>
+      </ul>
     </nav>
   );
 }

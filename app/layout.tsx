@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/layout/Navigation";
+
 import RecoilProvider from "@/components/recoil/recoilComponent";
 import AuthProvider from "@/components/auth/AuthProvider";
 import QueryProvider from "@/components/query/QueryProvider";
@@ -26,7 +26,6 @@ export default function RootLayout({
         <RecoilProvider>
           <QueryProvider>
             <AuthProvider>
-              <Navigation />
               {children}
 
               <Analytics />
