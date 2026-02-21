@@ -145,6 +145,7 @@ export default function ToolBar({ editor, addImage }: ToolBarProps) {
             />
             <button
               onClick={insertYoutube}
+              type="button"
               className={`${buttonClass} px-2 py-1`}
             >
               Insert
@@ -158,6 +159,7 @@ export default function ToolBar({ editor, addImage }: ToolBarProps) {
           (c) => (
             <button
               key={c}
+              type="button"
               onClick={() => setColor(c)}
               className="w-6 h-6 rounded border border-neutral-700"
               style={{ backgroundColor: c }}

@@ -11,12 +11,12 @@ interface PostLikeProps {
 export default function PostLike({ postId }: PostLikeProps) {
   const { data: user } = useUser();
 
-  const { data } = useLikeSummary(postId, "movie", user?.id);
+  const { data } = useLikeSummary(postId, "post", user?.id);
 
   return (
     <LikeButton
       targetId={postId}
-      targetType="movie"
+      targetType="post"
       isLiked={data?.isLiked ?? false}
       likeCount={data?.likeCount ?? 0}
       userId={user?.id}
