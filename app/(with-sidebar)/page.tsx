@@ -14,7 +14,7 @@ export default async function Page() {
     randomMovie.mainTrailerId ?? (await getYoutubeTrailerId(randomMovie.title));
 
   return (
-    <MainLayout>
+    <>
       <div className="sticky top-4 z-50 flex justify-end mb-4">
         <GlobalSearch />
       </div>
@@ -26,6 +26,6 @@ export default async function Page() {
       <section className="px-4 mt-6">
         <MoviePage movies={movies} />
       </section>
-    </MainLayout>
+    </>
   );
 }

@@ -28,7 +28,7 @@ export default function RootLayout({
             <AuthProvider>
               <Navigation />
               {children}
-              {/* 버셀 성능 테스트용 */}
+
               <Analytics />
               <SpeedInsights />
             </AuthProvider>

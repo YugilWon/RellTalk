@@ -7,7 +7,7 @@ import Image from "@tiptap/extension-image";
 import Youtube from "@tiptap/extension-youtube";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ToolBar from "./ToolBar";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
@@ -39,9 +39,16 @@ export default function Write({ post }: Props) {
       }),
       Image.configure({
         inline: false,
-        HTMLAttributes: { class: "rounded-lg" },
+        HTMLAttributes: {
+          class: "w-full max-w-full h-auto rounded-lg my-4",
+        },
       }),
-      Youtube.configure({ controls: true, width: 640, height: 360 }),
+      Youtube.configure({
+        controls: true,
+        HTMLAttributes: {
+          class: "w-full aspect-[16/9] rounded-lg my-4",
+        },
+      }),
     ],
     content: post?.content ?? "",
     immediatelyRender: false,
