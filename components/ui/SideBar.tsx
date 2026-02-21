@@ -61,11 +61,15 @@ export default function SideBar({
     <>
       {!isDesktop && (
         <button
-          className="fixed top-4 left-4 z-50 w-10 h-10 rounded-full
-                     bg-indigo-600 text-white flex items-center justify-center shadow-lg"
-          onClick={() => setIsSidebarOpen(true)}
+          className={`
+    fixed top-4 z-50 w-10 h-10 rounded-full
+    bg-indigo-600 text-white flex items-center justify-center shadow-lg
+    transition-all duration-300
+    ${isSidebarOpen ? "left-72" : "left-4"}
+  `}
+          onClick={() => setIsSidebarOpen((prev) => !prev)}
         >
-          ☰
+          {isSidebarOpen ? "✕" : "☰"}
         </button>
       )}
 

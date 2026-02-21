@@ -59,10 +59,10 @@ const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
   if (!videoId) return null;
 
   return (
-    <div className="relative w-full max-w-[1280px] mx-auto">
+    <div className="relative w-full max-w-[1280px] mx-auto aspect-video">
       {!isPlaying ? (
         <div
-          className="relative cursor-pointer w-full h-[720px] rounded-xl overflow-hidden"
+          className="relative cursor-pointer w-full h-full rounded-xl overflow-hidden"
           onClick={handlePlayClick}
         >
           <div className="absolute inset-0 bg-black" />
@@ -81,7 +81,7 @@ const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
       ) : (
         <div
           id="youtube-player"
-          className="w-full h-[720px] rounded-xl overflow-hidden"
+          className="w-full h-full rounded-xl overflow-hidden"
         />
       )}
     </div>
