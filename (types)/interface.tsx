@@ -141,3 +141,21 @@ export interface CommentFormProps {
   placeholder?: string;
   autoFocus?: boolean;
 }
+
+export interface Post {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+  profiles:
+    | {
+        id: string;
+        nickname: string;
+        avatar_url: string;
+      }
+    | {
+        id: string;
+        nickname: string;
+        avatar_url: string;
+      }[];
+}
