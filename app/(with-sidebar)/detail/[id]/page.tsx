@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Comments from "@/components/comment/Comment";
-import { getMovie } from "@/app/lib/movies";
-import { getYoutubeTrailerId } from "@/app/lib/youtube";
+import { getBestTrailer, getMovie } from "@/app/lib/movies";
+
 import MovieLike from "@/components/like/MovieLike";
 
 export default async function DetailPage({
@@ -11,7 +11,7 @@ export default async function DetailPage({
 }) {
   const movie = await getMovie(params.id);
 
-  const trailerId = await getYoutubeTrailerId(movie.title).catch(() => null);
+  const trailerId = await getBestTrailer(movie);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">

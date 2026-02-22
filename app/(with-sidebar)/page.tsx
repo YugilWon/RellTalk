@@ -1,6 +1,5 @@
 import { getPopularMovies } from "../lib/movies";
 import { getYoutubeTrailerId } from "../lib/youtube";
-import MainLayout from "@/components/movie/MainLayOut";
 import MoviePage from "@/components/movie/MoviePage";
 import YoutubePlayer from "@/components/youtube/youtube";
 import GlobalSearch from "@/components/ui/Search";
@@ -9,6 +8,7 @@ export default async function Page() {
   const movies = await getPopularMovies();
 
   const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+  console.log("영화 데이터", movies);
 
   const trailerId =
     randomMovie.mainTrailerId ?? (await getYoutubeTrailerId(randomMovie.title));

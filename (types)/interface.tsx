@@ -17,12 +17,6 @@ export type JWTPayload = {
   [key: string]: any;
 };
 
-export type SearchMovie = {
-  id: number;
-  title: string;
-  poster_path: string | null;
-};
-
 export type CommentTargetType = "movie" | "post";
 
 export interface Comment {

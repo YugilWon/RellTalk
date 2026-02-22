@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { SearchMovie } from "@/(types)/interface";
+
+type SearchMovie = {
+  id: number;
+  title: string;
+  poster_path: string | null;
+};
 
 export const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w92";
 
@@ -11,7 +16,7 @@ export const useSearch = () => {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const abortController = useRef<AbortController | null>(null);
 
-  const fetchMovies = async (query: string) => {
+  const SearchMovies = async (query: string) => {
     if (!query.trim()) return;
 
     abortController.current?.abort();
@@ -36,7 +41,7 @@ export const useSearch = () => {
 
   useEffect(() => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    debounceTimer.current = setTimeout(() => fetchMovies(keyword), 700);
+    debounceTimer.current = setTimeout(() => SearchMovies(keyword), 700);
 
     return () => {
       if (debounceTimer.current) clearTimeout(debounceTimer.current);
@@ -45,7 +50,7 @@ export const useSearch = () => {
 
   const executeSearch = () => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    fetchMovies(keyword);
+    SearchMovies(keyword);
   };
 
   return { keyword, setKeyword, results, loading, executeSearch };

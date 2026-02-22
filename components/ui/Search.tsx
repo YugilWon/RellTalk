@@ -66,7 +66,7 @@ export default function SearchBox() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") executeSearch();
               }}
-              placeholder="영화 제목 검색"
+              placeholder="영화 제목 검색 (공백 포함)"
               className="flex-1 bg-transparent text-white outline-none text-sm"
             />
             <button onClick={executeSearch} className="p-1">

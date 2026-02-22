@@ -1,4 +1,5 @@
 import { Movie } from "@/(types)/interface";
+import { getYoutubeTrailerId } from "./youtube";
 
 const API_KEY = process.env.NEXT_PUBLIC_APIKEY!;
 
@@ -68,4 +69,18 @@ export async function getPopularMoviesByPage(page: number): Promise<Movie[]> {
   const data = await res.json();
 
   return data.results.map(normalizeMovie);
+}
+
+export async function getBestTrailer(movie: any) {
+  const tmdbTrailer =
+    movie.videos?.results?.find(
+      (v: any) => v.site === "YouTube" && v.type === "Trailer" && v.official,
+    ) ??
+    movie.videos?.results?.find(
+      (v: any) => v.site === "YouTube" && v.type === "Trailer",
+    );
+
+  if (tmdbTrailer) return tmdbTrailer.key;
+
+  return await getYoutubeTrailerId(movie.title);
 }
