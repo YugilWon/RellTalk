@@ -8,53 +8,8 @@ export type YoutubePlayerProps = {
   videoId?: string | null;
 };
 
-declare global {
-  interface Window {
-    onYouTubeIframeAPIReady?: () => void;
-    YT: any;
-  }
-}
-
 const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
-
-  const loadYouTubeAPI = () => {
-    if (!videoId) return;
-
-    const createPlayer = () => {
-      const playerContainer = document.getElementById("youtube-player");
-      if (!playerContainer) return;
-
-      playerContainer.innerHTML = "";
-      new window.YT.Player("youtube-player", {
-        height: "720",
-        width: "100%",
-        videoId,
-        playerVars: {
-          autoplay: 1,
-          controls: 1,
-          modestbranding: 1,
-          rel: 0,
-          showinfo: 0,
-        },
-      });
-    };
-
-    if (window.YT && window.YT.Player) {
-      createPlayer();
-    } else {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      tag.async = true;
-      document.body.appendChild(tag);
-      window.onYouTubeIframeAPIReady = createPlayer;
-    }
-  };
-
-  const handlePlayClick = () => {
-    setIsPlaying(true);
-    setTimeout(() => loadYouTubeAPI(), 100);
-  };
 
   if (!videoId) return null;
 
@@ -63,7 +18,7 @@ const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
       {!isPlaying ? (
         <div
           className="relative cursor-pointer w-full h-full rounded-xl overflow-hidden"
-          onClick={handlePlayClick}
+          onClick={() => setIsPlaying(true)}
         >
           <div className="absolute inset-0 bg-black" />
 
@@ -79,9 +34,12 @@ const YoutubePlayer = ({ videoId }: YoutubePlayerProps) => {
           </div>
         </div>
       ) : (
-        <div
-          id="youtube-player"
-          className="w-full h-full rounded-xl overflow-hidden"
+        <iframe
+          className="w-full h-full rounded-xl"
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+          title="YouTube trailer"
+          allow="autoplay; encrypted-media"
+          allowFullScreen
         />
       )}
     </div>
