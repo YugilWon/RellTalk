@@ -3,29 +3,58 @@ import { getYoutubeTrailerId } from "./youtube";
 
 const API_KEY = process.env.NEXT_PUBLIC_APIKEY!;
 
-export function extractTrailerId(videos?: { results?: any[] }): string | null {
+interface TMDBVideo {
+  key: string;
+  site: string;
+  type: string;
+  official?: boolean;
+}
+
+interface TMDBMovieListItem {
+  id: number;
+  title: string;
+  overview: string;
+  backdrop_path: string | null;
+}
+
+interface TMDBMovieDetail extends TMDBMovieListItem {
+  videos?: {
+    results?: TMDBVideo[];
+  };
+}
+
+interface TMDBMovieListResponse {
+  results: TMDBMovieListItem[];
+}
+
+export function extractTrailerId(videos?: {
+  results?: TMDBVideo[];
+}): string | null {
   if (!videos?.results) return null;
 
-  const trailer = videos.results.find(
-    (v: any) =>
-      v.site === "YouTube" && v.type === "Trailer" && (v.official ?? true),
-  );
+  const trailer =
+    videos.results.find(
+      (v: any) =>
+        v.site === "YouTube" && v.type === "Trailer" && (v.official ?? true),
+    ) ??
+    videos.results.find(
+      (v: any) => v.site === "YouTube" && v.type === "Trailer",
+    );
 
   return trailer?.key ?? null;
 }
 
-async function fetchMovie(id: number) {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?append_to_response=videos&language=ko-KR&api_key=${API_KEY}`,
-    { next: { revalidate: 60 } },
-  );
-
-  if (!res.ok) throw new Error("Failed to fetch movie detail");
-
-  return res.json();
+function normalizeMovieList(data: TMDBMovieListItem): Movie {
+  return {
+    id: data.id,
+    title: data.title,
+    overview: data.overview,
+    backdrop_path: data.backdrop_path,
+    mainTrailerId: null,
+  };
 }
 
-function normalizeMovie(data: any): Movie {
+function normalizeMovieDetail(data: TMDBMovieDetail): Movie {
   return {
     id: data.id,
     title: data.title,
@@ -35,49 +64,65 @@ function normalizeMovie(data: any): Movie {
   };
 }
 
-export async function getMovie(id: string): Promise<Movie> {
-  const data = await fetchMovie(Number(id));
-  return normalizeMovie(data);
+async function fetchMovieDetail(id: number): Promise<TMDBMovieDetail> {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/${id}?append_to_response=videos&language=ko-KR&api_key=${API_KEY}`,
+    {
+      next: { revalidate: 86400 },
+    },
+  );
+
+  if (!res.ok) throw new Error("Failed to fetch movie detail");
+
+  return res.json();
 }
 
 export async function getPopularMovies(): Promise<Movie[]> {
   const listRequests = Array.from({ length: 5 }, (_, i) =>
     fetch(
       `https://api.themoviedb.org/3/movie/popular?language=ko-KR&api_key=${API_KEY}&page=${i + 1}`,
-      { next: { revalidate: 60 } },
-    ).then((r) => r.json()),
+      {
+        next: { revalidate: 86400 },
+      },
+    ).then((r) => r.json() as Promise<TMDBMovieListResponse>),
   );
 
   const listData = await Promise.all(listRequests);
-  const movies = listData.flatMap((d) => d.results);
 
-  const detailedMovies = await Promise.all(
-    movies.map((movie) => fetchMovie(movie.id).then(normalizeMovie)),
-  );
+  const movies = listData.flatMap((d) => d.results).map(normalizeMovieList);
 
-  return Array.from(new Map(detailedMovies.map((m) => [m.id, m])).values());
+  return Array.from(new Map(movies.map((m) => [m.id, m])).values());
 }
 
 export async function getPopularMoviesByPage(page: number): Promise<Movie[]> {
   const res = await fetch(
     `https://api.themoviedb.org/3/movie/popular?language=ko-KR&api_key=${API_KEY}&page=${page}`,
-    { next: { revalidate: 60 } },
+    {
+      next: { revalidate: 86400 },
+    },
   );
 
   if (!res.ok) throw new Error("Failed to fetch popular movies");
 
-  const data = await res.json();
+  const data = (await res.json()) as TMDBMovieListResponse;
 
-  return data.results.map(normalizeMovie);
+  return data.results.map(normalizeMovieList);
 }
 
-export async function getBestTrailer(movie: any) {
+export async function getMovie(id: string): Promise<Movie> {
+  const data = await fetchMovieDetail(Number(id));
+  return normalizeMovieDetail(data);
+}
+
+export async function getBestTrailer(
+  movie: TMDBMovieDetail,
+): Promise<string | null> {
   const tmdbTrailer =
     movie.videos?.results?.find(
-      (v: any) => v.site === "YouTube" && v.type === "Trailer" && v.official,
+      (v) => v.site === "YouTube" && v.type === "Trailer" && v.official,
     ) ??
     movie.videos?.results?.find(
-      (v: any) => v.site === "YouTube" && v.type === "Trailer",
+      (v) => v.site === "YouTube" && v.type === "Trailer",
     );
 
   if (tmdbTrailer) return tmdbTrailer.key;

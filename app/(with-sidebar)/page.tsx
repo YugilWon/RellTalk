@@ -8,7 +8,6 @@ export default async function Page() {
   const movies = await getPopularMovies();
 
   const randomMovie = movies[Math.floor(Math.random() * movies.length)];
-  console.log("영화 데이터", movies);
 
   const trailerId =
     randomMovie.mainTrailerId ?? (await getYoutubeTrailerId(randomMovie.title));

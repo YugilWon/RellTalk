@@ -4,18 +4,13 @@ export type Movie = {
   id: number;
   title: string;
   overview: string;
-  backdrop_path: string;
+  backdrop_path: string | null;
   mainTrailerId: string | null;
 };
 
 export interface Props {
   movie: Movie;
 }
-
-export type JWTPayload = {
-  exp: number;
-  [key: string]: any;
-};
 
 export type CommentTargetType = "movie" | "post";
 
@@ -122,18 +117,6 @@ export interface ViewModeProps {
   likeCount: number;
   isLiked: boolean;
   onReply: () => void;
-}
-
-export type LikeSectionProps = {
-  targetId: string;
-  targetType: "movie" | "post";
-};
-
-export interface CommentFormProps {
-  onSubmit: (content: string) => void;
-  isPending?: boolean;
-  placeholder?: string;
-  autoFocus?: boolean;
 }
 
 export interface Post {

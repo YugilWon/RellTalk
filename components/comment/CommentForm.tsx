@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { CommentFormProps } from "@/(types)/interface";
+
+interface CommentFormProps {
+  onSubmit: (content: string) => void;
+  isPending?: boolean;
+  placeholder?: string;
+  autoFocus?: boolean;
+}
 
 export default function CommentForm({
   onSubmit,

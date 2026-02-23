@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Props } from "../../(types)/interface";
 
-const MovieCard = React.memo(({ movie }: Props) => {
+const MovieCard = ({ movie }: Props) => {
   return (
     <li
       className="
@@ -58,7 +58,6 @@ const MovieCard = React.memo(({ movie }: Props) => {
       </Link>
     </li>
   );
-});
+};
 
-MovieCard.displayName = "MovieCard";
 export default MovieCard;
