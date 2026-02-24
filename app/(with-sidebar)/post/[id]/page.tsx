@@ -9,6 +9,7 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const post = await getPostById(params.id);
+
   if (!post) {
     notFound();
   }

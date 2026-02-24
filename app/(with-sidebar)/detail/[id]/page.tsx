@@ -2,6 +2,8 @@ import Image from "next/image";
 import Comments from "@/components/comment/Comment";
 import { getBestTrailer, getMovie } from "@/app/lib/movies";
 
+export const revalidate = 86400;
+
 import MovieLike from "@/components/like/MovieLike";
 
 export default async function DetailPage({

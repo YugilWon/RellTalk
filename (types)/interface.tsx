@@ -6,6 +6,8 @@ export type Movie = {
   overview: string;
   backdrop_path: string | null;
   mainTrailerId: string | null;
+  likeCount?: number;
+  isLiked?: boolean;
 };
 
 export interface Props {
@@ -96,6 +98,7 @@ export interface LikeButtonProps {
   isLiked: boolean;
   likeCount: number;
   userId?: string;
+  post?: Post;
 }
 
 export interface EditModeProps {
@@ -135,4 +138,6 @@ export interface Post {
         nickname: string;
         avatar_url: string;
       }[];
+  likeCount?: number;
+  isLiked?: boolean;
 }

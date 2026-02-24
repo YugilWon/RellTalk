@@ -28,10 +28,16 @@ export async function getPosts(): Promise<Post[]> {
   return data ?? [];
 }
 
-export async function getPostById(id: string): Promise<Post | null> {
+export async function getPostById(
+  id: string,
+): Promise<(Post & { likeCount: number; isLiked: boolean }) | null> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: post, error } = await supabase
     .from("posts")
     .select(
       `
@@ -49,10 +55,34 @@ export async function getPostById(id: string): Promise<Post | null> {
     .eq("id", id)
     .single();
 
-  if (error) {
+  if (error || !post) {
     console.error("게시글 조회 실패:", error);
     return null;
   }
 
-  return data ?? null;
+  const { count } = await supabase
+    .from("likes")
+    .select("*", { count: "exact", head: true })
+    .eq("target_id", id)
+    .eq("target_type", "post");
+
+  let isLiked = false;
+
+  if (user) {
+    const { data: liked } = await supabase
+      .from("likes")
+      .select("id")
+      .eq("target_id", id)
+      .eq("target_type", "post")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    isLiked = !!liked;
+  }
+
+  return {
+    ...post,
+    likeCount: count ?? 0,
+    isLiked,
+  };
 }

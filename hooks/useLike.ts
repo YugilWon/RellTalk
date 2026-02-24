@@ -107,65 +107,7 @@ export const useLikeSummary = (
   userId?: string,
 ) => {
   return useQuery({
-    queryKey: ["likeSummary", targetId, targetType],
+    queryKey: ["likeSummary", targetId, targetType, userId],
     queryFn: () => fetchLikeSummary(targetId, targetType, userId),
   });
 };
-
-// export const useToggleLike = (
-//   queryKey: unknown[],
-//   targetType: LikeTargetType,
-//   userId?: string,
-// ) => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: async ({
-//       targetId,
-//       isLiked,
-//     }: {
-//       targetId: string;
-//       isLiked: boolean;
-//     }) => {
-//       if (!userId) throw new Error("No user");
-
-//       if (isLiked) {
-//         return removeLike(targetId, targetType, userId);
-//       } else {
-//         return addLike(targetId, targetType, userId);
-//       }
-//     },
-
-//     onMutate: async ({ targetId, isLiked }) => {
-//       await queryClient.cancelQueries({ queryKey });
-
-//       const previousData = queryClient.getQueryData(queryKey) as any[];
-
-//       queryClient.setQueryData(queryKey, (old: any[] = []) =>
-//         old.map((item) =>
-//           item.id === targetId
-//             ? {
-//                 ...item,
-//                 likeCount: isLiked
-//                   ? Math.max((item.likeCount ?? 1) - 1, 0)
-//                   : (item.likeCount ?? 0) + 1,
-//                 isLiked: !isLiked,
-//               }
-//             : item,
-//         ),
-//       );
-
-//       return { previousData };
-//     },
-
-//     onError: (_err, _vars, context) => {
-//       if (context?.previousData) {
-//         queryClient.setQueryData(queryKey, context.previousData);
-//       }
-//     },
-
-//     onSettled: () => {
-//       queryClient.invalidateQueries({ queryKey });
-//     },
-//   });
-// };

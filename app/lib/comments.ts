@@ -67,7 +67,7 @@ export async function fetchComments({
       updatedAt: comment.updated_at,
       userId: comment.user_id,
       nickname: profile?.nickname || "익명",
-      avatarUrl: profile?.avatar_url || "기본이미지경로",
+      avatarUrl: profile?.avatar_url || "/assets/RillTalk.png",
       targetType: comment.target_type,
       targetId: comment.target_id,
       parentId: comment.parent_id ?? null,
