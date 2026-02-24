@@ -98,7 +98,6 @@ export interface LikeButtonProps {
   isLiked: boolean;
   likeCount: number;
   userId?: string;
-  post?: Post;
 }
 
 export interface EditModeProps {
