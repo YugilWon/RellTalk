@@ -8,6 +8,7 @@ interface TMDBVideo {
   site: string;
   type: string;
   official?: boolean;
+  genres?: string;
 }
 
 interface TMDBMovieListItem {
@@ -15,6 +16,7 @@ interface TMDBMovieListItem {
   title: string;
   overview: string;
   backdrop_path: string | null;
+  genres?: { id: number; name: string }[];
 }
 
 interface TMDBMovieDetail extends TMDBMovieListItem {
@@ -34,12 +36,10 @@ export function extractTrailerId(videos?: {
 
   const trailer =
     videos.results.find(
-      (v: any) =>
+      (v) =>
         v.site === "YouTube" && v.type === "Trailer" && (v.official ?? true),
     ) ??
-    videos.results.find(
-      (v: any) => v.site === "YouTube" && v.type === "Trailer",
-    );
+    videos.results.find((v) => v.site === "YouTube" && v.type === "Trailer");
 
   return trailer?.key ?? null;
 }
@@ -51,20 +51,22 @@ function normalizeMovieList(data: TMDBMovieListItem): Movie {
     overview: data.overview,
     backdrop_path: data.backdrop_path,
     mainTrailerId: null,
+    genres: data.genres?.map((g) => g.name).join(", ") ?? "",
   };
 }
 
-function normalizeMovieDetail(data: TMDBMovieDetail): Movie {
+export function normalizeMovieDetail(data: TMDBMovieDetail): Movie {
   return {
     id: data.id,
     title: data.title,
     overview: data.overview,
     backdrop_path: data.backdrop_path,
+    genres: data.genres?.map((g) => g.name).join(", ") ?? "",
     mainTrailerId: extractTrailerId(data.videos),
   };
 }
 
-async function fetchMovieDetail(id: number): Promise<TMDBMovieDetail> {
+export async function fetchMovieDetail(id: number): Promise<TMDBMovieDetail> {
   const res = await fetch(
     `https://api.themoviedb.org/3/movie/${id}?append_to_response=videos&language=ko-KR&api_key=${API_KEY}`,
     {
@@ -74,7 +76,9 @@ async function fetchMovieDetail(id: number): Promise<TMDBMovieDetail> {
 
   if (!res.ok) throw new Error("Failed to fetch movie detail");
 
-  return res.json();
+  const data = await res.json();
+
+  return data;
 }
 
 export async function getPopularMovies(): Promise<Movie[]> {

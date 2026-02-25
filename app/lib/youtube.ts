@@ -10,7 +10,9 @@ export async function getYoutubeTrailerId(
   )}&key=${YOUTUBE_API_KEY}&maxResults=1&type=video`;
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      next: { revalidate: 604800 },
+    });
     if (!response.ok) {
       console.error("YouTube API 요청 실패:", response.statusText);
       return null;

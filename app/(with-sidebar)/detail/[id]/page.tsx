@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Comments from "@/components/comment/Comment";
 import { getBestTrailer, getMovie } from "@/app/lib/movies";
-
-export const revalidate = 86400;
+import OverView from "@/components/detail/OverView";
+import { fetchMovieDetail, normalizeMovieDetail } from "@/app/lib/movies";
 
 import MovieLike from "@/components/like/MovieLike";
 
@@ -11,9 +11,9 @@ export default async function DetailPage({
 }: {
   params: { id: string };
 }) {
-  const movie = await getMovie(params.id);
-
-  const trailerId = await getBestTrailer(movie);
+  const tmdbMovie = await fetchMovieDetail(Number(params.id));
+  const trailerId = await getBestTrailer(tmdbMovie);
+  const movie = normalizeMovieDetail(tmdbMovie);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
@@ -40,12 +40,11 @@ export default async function DetailPage({
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-2 sm:mb-4">
             {movie.title}
           </h1>
-
           <MovieLike movieId={params.id} />
-
-          <p className="text-gray-300 text-sm sm:text-base max-w-3xl line-clamp-4 sm:line-clamp-3">
-            {movie.overview}
-          </p>
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+            {movie.genres}
+          </h2>
+          <OverView text={movie.overview} />
         </div>
       </div>
 

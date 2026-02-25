@@ -1,6 +1,7 @@
 import React from "react";
 import LikeButton from "../like/LikeButton";
 import { ViewModeProps } from "@/(types)/interface";
+import Image from "next/image";
 
 function ViewMode({
   comment,
@@ -26,11 +27,12 @@ function ViewMode({
   return (
     <>
       <div className="flex items-center gap-2 mb-2">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={comment.avatarUrl}
-          alt={comment.nickname}
-          className="w-7 h-7 md:w-8 md:h-8 rounded-full"
+        <Image
+          src={comment.avatarUrl ?? "/NoImage.png"}
+          alt={comment.nickname ?? "익명"}
+          width={24}
+          height={24}
+          className="rounded-full object-cover"
         />
         <p className="font-semibold text-sm md:text-base text-gray-100">
           {comment.nickname}

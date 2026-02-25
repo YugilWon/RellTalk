@@ -8,6 +8,7 @@ export type Movie = {
   mainTrailerId: string | null;
   likeCount?: number;
   isLiked?: boolean;
+  genres: string;
 };
 
 export interface Props {
