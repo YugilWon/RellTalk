@@ -30,8 +30,8 @@ function ViewMode({
         <Image
           src={comment.avatarUrl ?? "/NoImage.png"}
           alt={comment.nickname ?? "익명"}
-          width={24}
-          height={24}
+          width={36}
+          height={36}
           className="rounded-full object-cover"
         />
         <p className="font-semibold text-sm md:text-base text-gray-100">

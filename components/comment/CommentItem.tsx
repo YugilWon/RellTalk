@@ -6,6 +6,7 @@ import EditMode from "./EidtMode";
 import ViewMode from "./ViewMode";
 import { useToggleLike, useLikeSummary } from "@/hooks/useLike";
 import CommentForm from "./CommentForm";
+import { useChildComments } from "./useComment";
 
 type CommentCard = Omit<CommentCardProps, "likeMutation"> & {
   comments: CommentWithLike[];
@@ -26,18 +27,21 @@ export default function CommentCard({
 
   const isEdited = comment.updatedAt !== comment.createdAt;
 
-  const { data } = useLikeSummary(comment.id, "comment", user?.id);
+  const { data: likeSummary } = useLikeSummary(comment.id, "comment", user?.id);
   const likeMutation = useToggleLike(comment.id, "comment", user?.id);
+
+  const { data: childComments = [] } = useChildComments(
+    showReplies ? comment.id : null,
+    user?.id,
+  );
 
   const handleLike = () => {
     if (!user) {
       alert("로그인이 필요합니다.");
       return;
     }
-    likeMutation.mutate(data?.isLiked ?? false);
+    likeMutation.mutate(likeSummary?.isLiked ?? false);
   };
-
-  const replies = comments.filter((c) => c.parentId === comment.id);
 
   return (
     <li className="bg-neutral-900 rounded-xl p-3 md:p-4 flex flex-col space-y-2">
@@ -60,8 +64,8 @@ export default function CommentCard({
           setEditContent={setEditContent}
           deleteMutation={deleteMutation}
           handleLike={handleLike}
-          likeCount={data?.likeCount ?? 0}
-          isLiked={data?.isLiked ?? false}
+          likeCount={likeSummary?.likeCount ?? 0}
+          isLiked={likeSummary?.isLiked ?? false}
           onReply={() => setReplying((prev) => !prev)}
         />
       )}
@@ -88,20 +92,20 @@ export default function CommentCard({
         </div>
       )}
 
-      {replies.length > 0 && (
+      {comment.replyCount > 0 && (
         <button
           className="text-sm text-gray-400 hover:text-white ml-2 text-left"
           onClick={() => setShowReplies((prev) => !prev)}
         >
           {showReplies
-            ? `답글 숨기기 (${replies.length})`
-            : `답글 보기 (${replies.length})`}
+            ? `답글 숨기기 (${comment.replyCount})`
+            : `답글 보기 (${comment.replyCount})`}
         </button>
       )}
 
-      {showReplies && replies.length > 0 && (
+      {showReplies && childComments.length > 0 && (
         <ul className="ml-8 border-l border-neutral-700 pl-4 space-y-2">
-          {replies.map((reply) => (
+          {childComments.map((reply) => (
             <CommentCard
               key={reply.id}
               comment={reply}
@@ -109,7 +113,7 @@ export default function CommentCard({
               updateMutation={updateMutation}
               deleteMutation={deleteMutation}
               createMutation={createMutation}
-              comments={comments}
+              comments={[]}
             />
           ))}
         </ul>

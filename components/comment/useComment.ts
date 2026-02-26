@@ -4,6 +4,8 @@ import {
   createComment,
   updateComment,
   deleteComment,
+  fetchParentComments,
+  fetchChildComments,
 } from "@/app/lib/comments";
 import {
   CommentTargetType,
@@ -14,13 +16,32 @@ import {
 export const useComments = (
   targetId: string,
   targetType: CommentTargetType,
-  parentId: string | null,
-  userId?: string,
+  userId: string | undefined,
+  page: number,
 ) => {
   return useQuery({
-    queryKey: ["comments", targetId, targetType, userId, parentId],
-    queryFn: () => fetchComments({ targetId, targetType, userId, parentId }),
+    queryKey: ["comments", targetId, targetType, userId, page],
+    queryFn: () =>
+      fetchParentComments({
+        targetId,
+        targetType,
+        userId,
+        page,
+      }),
     enabled: !!targetId,
+    placeholderData: (previousData) => previousData,
+  });
+};
+
+export const useChildComments = (parentId: string | null, userId?: string) => {
+  return useQuery({
+    queryKey: ["childComments", parentId],
+    queryFn: () =>
+      fetchChildComments({
+        parentId: parentId!,
+        userId,
+      }),
+    enabled: !!parentId,
   });
 };
 
@@ -85,6 +106,7 @@ export const useCreateComment = (
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["comments", targetId, targetType],
+        exact: false,
       });
     },
   });
@@ -100,7 +122,7 @@ export const useUpdateComment = (
     void,
     Error,
     UpdateCommentPayload,
-    { previousComments?: any[]; queryKey: unknown[] } | undefined // context
+    { previousComments?: any[]; queryKey: unknown[] } | undefined
   >({
     mutationFn: (data: UpdateCommentPayload) => updateComment(data),
     onMutate: async (updatedComment) => {
@@ -133,6 +155,7 @@ export const useUpdateComment = (
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["comments", targetId, targetType],
+        exact: false,
       });
     },
   });
@@ -149,6 +172,7 @@ export const useDeleteComment = (
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["comments", targetId, targetType],
+        exact: false,
       });
     },
   });

@@ -58,6 +58,7 @@ export type CommentData = {
 export interface CommentWithLike extends CommentData {
   isLiked: boolean;
   likeCount: number;
+  replyCount: number;
 }
 
 export type UserData = {

@@ -11,6 +11,7 @@ import { CommentTargetType } from "@/(types)/interface";
 import CommentCard from "./CommentItem";
 import CommentForm from "./CommentForm";
 import LoginRequiredMessage from "../common/LoginLequireMessage";
+import { useState } from "react";
 
 export default function Comments({
   targetId,
@@ -19,14 +20,13 @@ export default function Comments({
   targetId: string;
   targetType: CommentTargetType;
 }) {
+  const [page, setPage] = useState(1);
   const { data: user } = useUser();
 
-  const { data: comments, isLoading } = useComments(
-    targetId,
-    targetType,
-    null,
-    user?.id,
-  );
+  const { data, isLoading } = useComments(targetId, targetType, user?.id, page);
+
+  const comments = data?.data ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   const currentUser = user
     ? {
@@ -59,20 +59,35 @@ export default function Comments({
         <p className="text-gray-400">불러오는 중...</p>
       ) : (
         <ul className="space-y-4">
-          {comments
-            ?.filter((comment) => comment.parentId === null)
-            .map((comment) => (
-              <CommentCard
-                key={comment.id}
-                comment={comment}
-                user={currentUser}
-                updateMutation={updateMutation}
-                deleteMutation={deleteMutation}
-                createMutation={createMutation}
-                comments={comments}
-              />
-            ))}
+          {comments.map((comment) => (
+            <CommentCard
+              key={comment.id}
+              comment={comment}
+              user={currentUser}
+              updateMutation={updateMutation}
+              deleteMutation={deleteMutation}
+              createMutation={createMutation}
+              comments={comments}
+            />
+          ))}
         </ul>
+      )}
+      {totalPages > 1 && (
+        <div className="flex gap-2 justify-center mt-6">
+          {Array.from({ length: totalPages }, (_, i) => (
+            <button
+              key={i}
+              onClick={() => setPage(i + 1)}
+              className={`px-3 py-1 rounded ${
+                page === i + 1
+                  ? "bg-white text-black"
+                  : "bg-neutral-800 text-white"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
       )}
     </section>
   );
