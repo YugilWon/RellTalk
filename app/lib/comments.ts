@@ -42,7 +42,7 @@ export async function fetchParentComments({
     .eq("target_id", targetId)
     .eq("target_type", targetType)
     .is("parent_id", null)
-    .order("created_at", { ascending: false })
+    .order("created_at", { ascending: true })
     .range(from, to);
 
   if (error) throw error;

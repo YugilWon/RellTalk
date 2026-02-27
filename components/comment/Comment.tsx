@@ -23,7 +23,7 @@ export default function Comments({
   const [page, setPage] = useState(1);
   const { data: user } = useUser();
 
-  const { data, isLoading } = useComments(targetId, targetType, user?.id, page);
+  const { data, isLoading } = useComments(targetId, targetType, page);
 
   const comments = data?.data ?? [];
   const totalPages = data?.totalPages ?? 1;
@@ -36,7 +36,7 @@ export default function Comments({
       }
     : undefined;
 
-  const createMutation = useCreateComment(targetId, targetType, currentUser);
+  const createMutation = useCreateComment(targetId, targetType);
   const updateMutation = useUpdateComment(targetId, targetType);
   const deleteMutation = useDeleteComment(targetId, targetType);
 

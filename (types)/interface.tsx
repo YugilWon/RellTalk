@@ -72,12 +72,7 @@ export type LikeTargetType = "comment" | "movie" | "post";
 export type CommentCardProps = {
   comment: CommentWithLike;
   user?: UserData;
-  updateMutation: UseMutationResult<
-    void,
-    Error,
-    UpdateCommentPayload,
-    { previousComments?: any[]; queryKey: unknown[] } | undefined
-  >;
+  updateMutation: UseMutationResult<void, Error, UpdateCommentPayload>;
   deleteMutation: UseMutationResult<void, Error, string>;
   likeMutation: UseMutationResult<
     void,
