@@ -1,4 +1,4 @@
-import { Movie } from "@/(types)/interface";
+import { Movie, GenresResponse } from "@/(types)/interface";
 import { getYoutubeTrailerId } from "./youtube";
 
 const API_KEY = process.env.NEXT_PUBLIC_APIKEY!;
@@ -132,4 +132,28 @@ export async function getBestTrailer(
   if (tmdbTrailer) return tmdbTrailer.key;
 
   return await getYoutubeTrailerId(movie.title);
+}
+
+export async function getGenres(): Promise<GenresResponse> {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/genre/movie/list?language=ko-KR&api_key=${API_KEY}`,
+    { next: { revalidate: 86400 } },
+  );
+  return res.json();
+}
+
+export async function getMoviesByGenre(
+  genreId: string,
+  page = 1,
+): Promise<Movie[]> {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/discover/movie?with_genres=${genreId}&page=${page}&language=ko-KR&api_key=${API_KEY}`,
+    { next: { revalidate: 86400 } },
+  );
+
+  if (!res.ok) return [];
+
+  const data: TMDBMovieListResponse = await res.json();
+
+  return data.results.map(normalizeMovieList);
 }

@@ -6,17 +6,22 @@ import Link from "next/link";
 import { Movie } from "@/(types)/interface";
 import NoImage from "@/assets/NoImage.png";
 
-interface TMDBPopularProps {
+interface MovieistProps {
   initialMovies?: Movie[];
+  apiPath: string;
+  title: string;
 }
 
-export default function TMDBPopular({ initialMovies = [] }: TMDBPopularProps) {
+export default function MovieInfiniteList({
+  initialMovies = [],
+  apiPath,
+  title,
+}: MovieistProps) {
   const [movies, setMovies] = useState<Movie[]>(initialMovies);
   const [page, setPage] = useState(initialMovies.length ? 2 : 1);
-  const [More, setMore] = useState(true);
-  const [imageError, setImageError] = useState<Record<number, boolean>>({});
+  const [more, setMore] = useState(true);
   const observerRef = useRef<HTMLDivElement | null>(null);
-
+  const [imageError, setImageError] = useState<Record<number, boolean>>({});
   const getImageUrl = (movie: Movie) => {
     if (imageError[movie.id]) {
       return NoImage;
@@ -28,10 +33,9 @@ export default function TMDBPopular({ initialMovies = [] }: TMDBPopularProps) {
 
     return NoImage;
   };
-
   useEffect(() => {
     const fetchMovies = async () => {
-      const res = await fetch(`/api/popular?page=${page}`);
+      const res = await fetch(`${apiPath}?page=${page}`);
       const data = await res.json();
 
       if (!data.results || data.results.length === 0) {
@@ -48,10 +52,10 @@ export default function TMDBPopular({ initialMovies = [] }: TMDBPopularProps) {
     };
 
     fetchMovies();
-  }, [page]);
+  }, [page, apiPath]);
 
   useEffect(() => {
-    if (!More) return;
+    if (!more) return;
 
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
@@ -65,11 +69,11 @@ export default function TMDBPopular({ initialMovies = [] }: TMDBPopularProps) {
     return () => {
       if (current) observer.unobserve(current);
     };
-  }, [More]);
+  }, [more]);
 
   return (
     <section className="mt-16">
-      <h2 className="text-2xl font-bold mb-6 text-white">🎬 TMDB 인기 영화</h2>
+      <h2 className="text-2xl font-bold mb-6 text-white">{title}</h2>
 
       <div
         className="
@@ -108,7 +112,7 @@ export default function TMDBPopular({ initialMovies = [] }: TMDBPopularProps) {
         ))}
       </div>
 
-      {More && (
+      {more && (
         <div
           ref={observerRef}
           className="h-20 flex items-center justify-center"

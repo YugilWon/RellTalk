@@ -21,6 +21,7 @@ const menus: Menu[] = [
   { name: "마이 페이지", path: "/mypage", requireAuth: true },
   { name: "추천작", path: "/recommend" },
   { name: "자유 게시판", path: "/post" },
+  { name: "장르별 영화", path: "/genres" },
 ];
 
 export default function SideBar({
