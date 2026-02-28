@@ -20,9 +20,11 @@ export default function LikedMovies({ userId }: { userId: string }) {
           return;
         }
 
-        const moviePromises = likedMovieIds.map((id: string) => getMovie(id));
+        const numericIds = likedMovieIds.map(Number).filter((id) => !isNaN(id));
 
-        const movieData = await Promise.all(moviePromises);
+        const movieData = await Promise.all(
+          numericIds.map((id) => getMovie(id)),
+        );
 
         setMovies(movieData);
       } catch (error) {

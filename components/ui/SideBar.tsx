@@ -20,8 +20,8 @@ interface SideBarProps {
 const menus: Menu[] = [
   { name: "마이 페이지", path: "/mypage", requireAuth: true },
   { name: "추천작", path: "/recommend" },
-  { name: "자유 게시판", path: "/post" },
   { name: "장르별 영화", path: "/genres" },
+  { name: "자유 게시판", path: "/post" },
 ];
 
 export default function SideBar({
@@ -66,7 +66,7 @@ export default function SideBar({
     fixed top-2 z-50 w-10 h-10 rounded-full
     bg-indigo-600 text-white flex items-center justify-center shadow-lg
     transition-all duration-300
-    ${isSidebarOpen ? "left-72" : "left-0"}
+    ${isSidebarOpen ? "left-62" : "left-0"}
   `}
           onClick={() => setIsSidebarOpen((prev) => !prev)}
         >

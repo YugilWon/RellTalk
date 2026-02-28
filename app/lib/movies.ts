@@ -67,6 +67,7 @@ export function normalizeMovieDetail(data: TMDBMovieDetail): Movie {
 }
 
 export async function fetchMovieDetail(id: number): Promise<TMDBMovieDetail> {
+  console.log("요청 id:", id);
   const res = await fetch(
     `https://api.themoviedb.org/3/movie/${id}?append_to_response=videos&language=ko-KR&api_key=${API_KEY}`,
     {
@@ -113,7 +114,7 @@ export async function getPopularMoviesByPage(page: number): Promise<Movie[]> {
   return data.results.map(normalizeMovieList);
 }
 
-export async function getMovie(id: string): Promise<Movie> {
+export async function getMovie(id: number): Promise<Movie> {
   const data = await fetchMovieDetail(Number(id));
   return normalizeMovieDetail(data);
 }
