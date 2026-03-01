@@ -5,8 +5,9 @@ import ProfileInfo from "./ProfileInfo";
 import { fetchUser } from "@/app/lib/user";
 import { getProfileInfo } from "@/app/lib/profileinfo";
 import LikedMovies from "./LikedMovies";
+import MyPost from "./MyPost";
 
-const tabs = ["내 정보", "내가 좋아하는 영화", "내 댓글"];
+const tabs = ["내 정보", "내가 좋아하는 영화", "내가 쓴 글"];
 
 export default function MyPageLayOut() {
   const [activeTab, setActiveTab] = useState("내 정보");
@@ -71,7 +72,7 @@ export default function MyPageLayOut() {
         {activeTab === "내가 좋아하는 영화" && user && (
           <LikedMovies userId={user.id} />
         )}
-        {/* {activeTab === "내 댓글" && <MyComments />} */}
+        {activeTab === "내가 쓴 글" && user && <MyPost userId={user.id} />}
       </div>
     </div>
   );

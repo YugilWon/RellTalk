@@ -1,6 +1,44 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
+export async function GET(req: Request) {
+  const supabase = await createClient();
+
+  const { searchParams } = new URL(req.url);
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "9");
+
+  const offset = (page - 1) * limit;
+
+  const { data, error, count } = await supabase
+    .from("posts")
+    .select(
+      `
+      id,
+      title,
+      content,
+      created_at,
+      profiles (
+        id,
+        nickname,
+        avatar_url
+      )
+      `,
+      { count: "exact" },
+    )
+    .order("created_at", { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  if (error) {
+    return NextResponse.json(
+      { error: "게시글 불러오기 실패" },
+      { status: 500 },
+    );
+  }
+
+  return NextResponse.json({ posts: data ?? [], totalCount: count ?? 0 });
+}
+
 export async function POST(req: Request) {
   const supabase = await createClient();
 

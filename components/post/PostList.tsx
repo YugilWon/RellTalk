@@ -1,25 +1,48 @@
-"use client";
-
 import Link from "next/link";
 import { Post } from "@/(types)/interface";
-import Image from "next/image";
+import PostCard from "./PostCard";
 
 interface PostListProps {
   posts: Post[];
+  showWriteButton?: boolean;
+  title?: string;
+
+  page?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
 }
 
-export default function PostList({ posts }: PostListProps) {
+export default function PostList({
+  posts,
+  showWriteButton = true,
+  title = "게시글",
+  page,
+  totalPages,
+  onPageChange,
+}: PostListProps) {
+  const getPageNumbers = () => {
+    if (!page || !totalPages) return [];
+
+    const maxVisible = 5;
+    const start = Math.max(1, page - 2);
+    const end = Math.min(totalPages, start + maxVisible - 1);
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-white">게시글</h1>
+        <h1 className="text-2xl font-bold text-white">{title}</h1>
 
-        <Link
-          href="/write"
-          className="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:opacity-80 transition"
-        >
-          작성하기
-        </Link>
+        {showWriteButton && (
+          <Link
+            href="/write"
+            className="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:opacity-80 transition"
+          >
+            작성하기
+          </Link>
+        )}
       </div>
 
       {posts.length === 0 ? (
@@ -27,43 +50,47 @@ export default function PostList({ posts }: PostListProps) {
           아직 작성된 게시글이 없습니다.
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => {
-            const author = Array.isArray(post.profiles)
-              ? post.profiles[0]
-              : post.profiles;
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
 
-            return (
-              <Link
-                key={post.id}
-                href={`/post/${post.id}`}
-                className="block bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-zinc-600 transition shadow-md hover:shadow-lg"
+          {page && totalPages && totalPages > 1 && onPageChange && (
+            <div className="flex justify-center items-center gap-2 mt-8">
+              <button
+                disabled={page === 1}
+                onClick={() => onPageChange(page - 1)}
+                className="px-3 py-1 bg-zinc-800 rounded disabled:opacity-40"
               >
-                <div className="flex items-center gap-3 mb-4">
-                  <Image
-                    src={author?.avatar_url ?? "/default-avatar.png"}
-                    alt="avatar"
-                    width={40}
-                    height={40}
-                    className="rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="text-sm font-semibold text-white">
-                      {author?.nickname ?? "알 수 없음"}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(post.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
+                이전
+              </button>
 
-                <h2 className="text-lg font-bold text-white line-clamp-2">
-                  {post.title}
-                </h2>
-              </Link>
-            );
-          })}
-        </div>
+              {getPageNumbers().map((num) => (
+                <button
+                  key={num}
+                  onClick={() => onPageChange(num)}
+                  className={`px-3 py-1 rounded ${
+                    page === num
+                      ? "bg-indigo-600 text-white"
+                      : "bg-zinc-800 text-gray-300"
+                  }`}
+                >
+                  {num}
+                </button>
+              ))}
+
+              <button
+                disabled={page === totalPages}
+                onClick={() => onPageChange(page + 1)}
+                className="px-3 py-1 bg-zinc-800 rounded disabled:opacity-40"
+              >
+                다음
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
