@@ -8,7 +8,7 @@ export default async function TMDBSSR() {
     <TMDBPopular
       initialMovies={initialMovies}
       apiPath="/api/popular"
-      title="🎬 TMDB 인기 영화"
+      title="🎬 인기 영화"
     />
   );
 }

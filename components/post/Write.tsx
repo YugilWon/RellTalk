@@ -25,6 +25,9 @@ export default function Write({ post }: Props) {
   const user = userQuery.data;
   const isLoading = userQuery.isLoading;
   const router = useRouter();
+  const [pendingImages, setPendingImages] = useState<
+    { file: File; tempUrl: string }[]
+  >([]);
 
   const editor = useEditor({
     extensions: [
@@ -78,16 +81,32 @@ export default function Write({ post }: Props) {
         className="w-full bg-neutral-900 border border-neutral-700 rounded-lg px-4 py-3 mb-6 focus:outline-none focus:border-white"
       />
 
-      <ToolBar editor={editor} addImage={(file) => addImage(file, editor)} />
+      <ToolBar
+        editor={editor}
+        addImage={(file) => addImage(file, editor, setPendingImages)}
+      />
 
       <div className="bg-neutral-900 border border-neutral-700 rounded-lg p-4 min-h-[300px] !text-inherit">
         <EditorContent editor={editor} />
       </div>
 
       <button
-        onClick={() =>
-          handleSubmit(title, editor, setIsSubmitting, router, post?.id)
-        }
+        onClick={async () => {
+          const success = await handleSubmit(
+            title,
+            editor,
+            pendingImages,
+            setIsSubmitting,
+            router,
+            post?.id,
+          );
+
+          if (success) {
+            pendingImages.forEach((img) => URL.revokeObjectURL(img.tempUrl));
+
+            setPendingImages([]);
+          }
+        }}
         disabled={isSubmitting}
         className={`mt-6 w-full py-3 rounded-lg font-semibold transition
           ${
