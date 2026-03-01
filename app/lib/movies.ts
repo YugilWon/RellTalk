@@ -114,7 +114,7 @@ export async function getPopularMoviesByPage(page: number): Promise<Movie[]> {
   return data.results.map(normalizeMovieList);
 }
 
-export async function getMovie(id: number): Promise<Movie> {
+export async function getMovie(id: string): Promise<Movie> {
   const data = await fetchMovieDetail(Number(id));
   return normalizeMovieDetail(data);
 }
