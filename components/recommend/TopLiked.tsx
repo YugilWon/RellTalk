@@ -17,7 +17,12 @@ export default async function TopLiked() {
     );
   }
 
-  const movies = await Promise.all(movieIds.map((id) => getMovie(id)));
+  const movies = await Promise.all(
+    movieIds
+      .map((id) => Number(id))
+      .filter((id) => !isNaN(id))
+      .map((id) => getMovie(id)),
+  );
 
   return (
     <section>
