@@ -4,40 +4,29 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useAuthActions } from "../auth/useAuthActions";
-import Image from "next/image";
-import PasswordInput from "../common/PasswordInput";
+import LoginForm from "../auth/LoginForm";
+import SignupForm from "../auth/SignIUpForm";
+import toast from "react-hot-toast";
 
 type Mode = "login" | "signup";
 
 const AuthModal = ({ onClose }: { onClose: () => void }) => {
   const { login, signup, googleLogin } = useAuthActions();
   const router = useRouter();
+
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
   const [avatar, setAvatar] = useState<File | null>(null);
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!avatar) {
-      setPreviewUrl(null);
-      return;
-    }
-
-    const url = URL.createObjectURL(avatar);
-    setPreviewUrl(url);
-
-    return () => URL.revokeObjectURL(url);
-  }, [avatar]);
 
   useEffect(() => {
     setMounted(true);
     document.body.style.overflow = "hidden";
+
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -47,10 +36,9 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
 
     if (mode === "signup" && password !== passwordConfirm) {
-      setError("비밀번호가 일치하지 않습니다.");
+      toast.error("비밀번호가 일치하지 않습니다.");
       return;
     }
 
@@ -59,8 +47,9 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
     try {
       if (mode === "login") {
         await login({ email, password });
-        window.location.reload();
+        toast.success("로그인 성공 🎉");
         onClose();
+        router.refresh();
         return;
       }
 
@@ -70,12 +59,13 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         nickname,
         avatar,
       });
-      router.refresh();
-      alert("회원가입이 완료되었습니다.");
+
+      toast.success("회원가입이 완료되었습니다 🎉");
       setMode("login");
+      router.refresh();
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "처리에 실패했습니다.");
+      toast.error(err.message || "처리에 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -83,12 +73,14 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
-    setError(null);
 
     try {
       await googleLogin();
-    } catch {
-      setError("구글 로그인에 실패했습니다.");
+      toast.success("로그인 성공 🎉");
+      onClose();
+      router.refresh();
+    } catch (err: any) {
+      toast.error("구글 로그인에 실패했습니다.");
     } finally {
       setLoading(false);
     }
@@ -108,84 +100,31 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
           {mode === "login" ? "로그인" : "회원가입"}
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
-          {mode === "signup" && (
-            <>
-              <label
-                htmlFor="avatar-upload"
-                className="flex flex-col items-center justify-center w-24 h-24 mx-auto mb-4 rounded-full border border-dashed cursor-pointer hover:bg-gray-50 overflow-hidden"
-              >
-                {previewUrl ? (
-                  <Image
-                    src={previewUrl}
-                    alt="프로필 이미지 미리보기"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center text-center text-gray-500 text-xs sm:text-sm">
-                    <span>프로필 이미지</span>
-                    <span>클릭해서 업로드</span>
-                  </div>
-                )}
-
-                <input
-                  id="avatar-upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => setAvatar(e.target.files?.[0] ?? null)}
-                  disabled={loading}
-                />
-              </label>
-
-              <input
-                type="text"
-                placeholder="닉네임"
-                className="w-full p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                disabled={loading}
-                required
-              />
-            </>
-          )}
-
-          <input
-            type="email"
-            placeholder="이메일"
-            className="w-full p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-            required
+        {mode === "login" ? (
+          <LoginForm
+            email={email}
+            password={password}
+            loading={loading}
+            onEmailChange={setEmail}
+            onPasswordChange={setPassword}
+            onSubmit={handleSubmit}
           />
-
-          <PasswordInput
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="비밀번호"
-            disabled={loading}
-            className="p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+        ) : (
+          <SignupForm
+            email={email}
+            password={password}
+            passwordConfirm={passwordConfirm}
+            nickname={nickname}
+            avatar={avatar}
+            loading={loading}
+            onEmailChange={setEmail}
+            onPasswordChange={setPassword}
+            onPasswordConfirmChange={setPasswordConfirm}
+            onNicknameChange={setNickname}
+            onAvatarChange={setAvatar}
+            onSubmit={handleSubmit}
           />
-
-          {mode === "signup" && (
-            <PasswordInput
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-              placeholder="비밀번호 확인"
-              disabled={loading}
-              className="p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-            />
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 sm:py-3 rounded text-sm sm:text-base transition"
-          >
-            {loading ? "처리 중..." : mode === "login" ? "로그인" : "회원가입"}
-          </button>
-        </form>
+        )}
 
         <button
           onClick={handleGoogleLogin}
@@ -218,10 +157,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
             </>
           )}
         </div>
-
-        {error && (
-          <div className="text-red-500 mt-3 text-sm text-center">{error}</div>
-        )}
       </div>
     </div>,
     document.body,
