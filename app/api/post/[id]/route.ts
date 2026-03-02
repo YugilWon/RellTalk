@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
+type UpdatePostBody = {
+  title?: string;
+  content?: string;
+};
+
 export async function DELETE(
   req: Request,
   { params }: { params: { id: string } },
@@ -36,9 +41,9 @@ export async function PATCH(
   const supabase = await createClient();
   const postId = params.id;
 
-  let body: any;
+  let body: UpdatePostBody;
   try {
-    body = await req.json();
+    body = (await req.json()) as UpdatePostBody;
   } catch {
     return NextResponse.json(
       { error: "잘못된 요청 형식입니다." },
@@ -68,7 +73,7 @@ export async function PATCH(
       { status: 401 },
     );
 
-  const updateData: any = {};
+  const updateData: Partial<UpdatePostBody> = {};
   if (title) updateData.title = title.trim();
   if (content) updateData.content = content.trim();
 

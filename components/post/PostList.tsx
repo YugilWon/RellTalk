@@ -10,6 +10,7 @@ interface PostListProps {
   page?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
+  isFetching?: boolean;
 }
 
 export default function PostList({
@@ -19,6 +20,7 @@ export default function PostList({
   page,
   totalPages,
   onPageChange,
+  isFetching,
 }: PostListProps) {
   const getPageNumbers = () => {
     if (!page || !totalPages) return [];
@@ -29,6 +31,10 @@ export default function PostList({
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
+
+  {
+    isFetching && <p className="text-sm text-gray-400">불러오는 중...</p>;
+  }
 
   return (
     <div className="space-y-6">
@@ -60,7 +66,7 @@ export default function PostList({
           {page && totalPages && totalPages > 1 && onPageChange && (
             <div className="flex justify-center items-center gap-2 mt-8">
               <button
-                disabled={page === 1}
+                disabled={isFetching || page === 1}
                 onClick={() => onPageChange(page - 1)}
                 className="px-3 py-1 bg-zinc-800 rounded disabled:opacity-40"
               >

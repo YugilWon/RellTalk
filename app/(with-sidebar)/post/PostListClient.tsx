@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PostList from "@/components/post/PostList";
 import { Post } from "@/(types)/interface";
-
+import { usePostQuery } from "@/hooks/usePostQuery";
 interface Props {
   initialPosts: Post[];
   initialTotalCount: number;
@@ -17,45 +17,32 @@ export default function PostListClient({
   initialPage = 1,
   pageSize = 9,
 }: Props) {
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
-  const [totalCount, setTotalCount] = useState(initialTotalCount);
   const [page, setPage] = useState(initialPage);
-  const [loading, setLoading] = useState(false);
 
-  const limit = pageSize;
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-
-      if (page === initialPage) {
-        setPosts(initialPosts);
-        setTotalCount(initialTotalCount);
-        setLoading(false);
-        return;
-      }
-
-      const res = await fetch(`/api/post?page=${page}&limit=${limit}`);
-      const data = await res.json();
-      setPosts(data.posts);
-      setTotalCount(data.totalCount);
-      setLoading(false);
-    };
-
-    fetchPosts();
-  }, [page, initialPage, limit, initialPosts, initialTotalCount]);
-
-  const totalPages = Math.ceil(totalCount / limit);
-
-  if (loading) return <div>불러오는 중...</div>;
+  const { data, isFetching } = usePostQuery({
+    page,
+    pageSize,
+    initialData:
+      page === initialPage
+        ? {
+            posts: initialPosts,
+            totalCount: initialTotalCount,
+          }
+        : undefined,
+  });
+  const posts = data?.posts ?? [];
+  const totalCount = data?.totalCount ?? 0;
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
     <PostList
       posts={posts}
+      showWriteButton
       title="자유 게시판"
       page={page}
       totalPages={totalPages}
       onPageChange={setPage}
+      isFetching={isFetching}
     />
   );
 }
