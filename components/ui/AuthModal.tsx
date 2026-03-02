@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useAuthActions } from "../auth/useAuthActions";
+import Image from "next/image";
+import PasswordInput from "../common/PasswordInput";
 
 type Mode = "login" | "signup";
 
@@ -114,8 +116,7 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
                 className="flex flex-col items-center justify-center w-24 h-24 mx-auto mb-4 rounded-full border border-dashed cursor-pointer hover:bg-gray-50 overflow-hidden"
               >
                 {previewUrl ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
+                  <Image
                     src={previewUrl}
                     alt="프로필 이미지 미리보기"
                     className="w-full h-full object-cover"
@@ -159,25 +160,21 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
             required
           />
 
-          <input
-            type="password"
-            placeholder="비밀번호"
-            className="w-full p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="비밀번호"
             disabled={loading}
-            required
+            className="p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
           />
 
           {mode === "signup" && (
-            <input
-              type="password"
-              placeholder="비밀번호 확인"
-              className="w-full p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+            <PasswordInput
               value={passwordConfirm}
               onChange={(e) => setPasswordConfirm(e.target.value)}
+              placeholder="비밀번호 확인"
               disabled={loading}
-              required
+              className="p-2 sm:p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
             />
           )}
 
