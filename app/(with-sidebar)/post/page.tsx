@@ -1,6 +1,8 @@
 import { getPosts } from "@/app/lib/post";
 import PostListClient from "./PostListClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const { posts, totalCount } = await getPosts({ page: 1, limit: 9 });
 
