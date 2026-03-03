@@ -60,9 +60,8 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         avatar,
       });
 
-      toast.success("회원가입이 완료되었습니다 🎉");
-      setMode("login");
-      router.refresh();
+      toast.success("이메일을 확인해주세요 📩");
+      onClose();
     } catch (err: any) {
       console.error(err);
       toast.error(err.message || "처리에 실패했습니다.");

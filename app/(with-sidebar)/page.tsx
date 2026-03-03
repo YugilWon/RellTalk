@@ -3,6 +3,7 @@ import { getYoutubeTrailerId } from "../lib/youtube";
 import MoviePage from "@/components/movie/MoviePage";
 import YoutubePlayer from "@/components/youtube/youtube";
 import GlobalSearch from "@/components/ui/Search";
+import AuthToast from "@/components/common/AuthToast";
 
 export default async function Page() {
   const movies = await getPopularMovies();
@@ -17,7 +18,7 @@ export default async function Page() {
       <div className="sticky top-4 z-50 flex justify-end mb-4">
         <GlobalSearch />
       </div>
-
+      <AuthToast />
       <section className="px-4">
         <YoutubePlayer videoId={trailerId} />
       </section>
