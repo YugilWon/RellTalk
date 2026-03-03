@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabase/client";
+import toast from "react-hot-toast";
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -15,7 +16,8 @@ export default function AuthCallback() {
         } = await supabase.auth.getUser();
 
         if (!user) {
-          router.replace("/?auth=error");
+          toast.error("인증 처리 중 문제가 발생했습니다.");
+          router.replace("/");
           return;
         }
 
@@ -33,14 +35,17 @@ export default function AuthCallback() {
           });
 
           if (error) {
-            router.replace("/?auth=error");
+            toast.error("인증 처리 중 문제가 발생했습니다.");
+            router.replace("/");
             return;
           }
         }
 
-        router.replace("/?auth=success");
+        toast.success("회원가입이 완료되었습니다!");
+        router.replace("/");
       } catch (err) {
-        router.replace("/?auth=error");
+        toast.error("인증 처리 중 문제가 발생했습니다.");
+        router.replace("/");
       }
     };
 
