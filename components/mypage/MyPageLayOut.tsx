@@ -15,21 +15,28 @@ export default function MyPageLayOut() {
     nickname: string | null;
     avatarUrl: string | null;
   } | null>(null);
-  const [user, setUser] = useState<{ id: string } | null>(null);
+  const [user, setUser] = useState<{ id: string; provider?: string } | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const user = await fetchUser();
-        if (!user) {
+        const supabaseUser = await fetchUser();
+
+        if (!supabaseUser) {
           alert("로그인이 필요합니다.");
           setLoading(false);
           return;
         }
-        setUser(user);
 
-        const profileData = await getProfileInfo(user.id);
+        setUser({
+          id: supabaseUser.id,
+          provider: supabaseUser.app_metadata?.provider,
+        });
+
+        const profileData = await getProfileInfo(supabaseUser.id);
         setProfile(profileData);
       } catch (err) {
         console.error(err);
@@ -67,6 +74,7 @@ export default function MyPageLayOut() {
             userId={user.id}
             nickname={profile.nickname ?? "닉네임을 설정해주세요"}
             avatarUrl={profile.avatarUrl ?? "/default-avatar.png"}
+            provider={user.provider}
           />
         )}
         {activeTab === "내가 좋아하는 영화" && user && (

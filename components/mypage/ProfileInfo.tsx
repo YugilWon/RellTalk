@@ -36,7 +36,8 @@ export default function ProfileInfo({
     handlePasswordChange,
   } = useChangePassword();
 
-  const isGoogleLogin = provider === "google";
+  const isGoogleLogin = provider !== "email";
+  console.log(provider);
 
   return (
     <div className="max-w-2xl w-full mx-auto bg-gray-900/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-700">
@@ -116,9 +117,7 @@ export default function ProfileInfo({
       ) : (
         <section className="p-4 bg-gray-800 rounded-md">
           <p className="text-gray-300 text-sm">
-            구글 로그인 계정은 비밀번호를 변경할 수 없습니다.
-            <br />
-            비밀번호로 로그인하려면 이메일로 가입한 계정을 사용하세요.
+            이메일이 아닌 계정은 비밀번호를 변경할 수 없습니다.
           </p>
         </section>
       )}
