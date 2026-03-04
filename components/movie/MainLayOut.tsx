@@ -2,15 +2,12 @@
 
 import { useState } from "react";
 import SideBar from "../ui/SideBar";
-import useAuthCheck from "@/components/auth/useAuthCheck";
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  useAuthCheck();
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (

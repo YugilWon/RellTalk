@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 import { useAuthActions } from "../auth/useAuthActions";
 import LoginForm from "../auth/LoginForm";
 import SignupForm from "../auth/SignUpForm";
@@ -26,7 +27,6 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
   useEffect(() => {
     setMounted(true);
     document.body.style.overflow = "hidden";
-
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -53,17 +53,10 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         return;
       }
 
-      await signup({
-        email,
-        password,
-        nickname,
-        avatar,
-      });
-
+      await signup({ email, password, nickname, avatar });
       toast.success("회원가입이 완료되었습니다.");
       onClose();
     } catch (err: any) {
-      console.error(err);
       toast.error(err.message || "처리에 실패했습니다.");
     } finally {
       setLoading(false);
@@ -72,13 +65,12 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
-
     try {
       await googleLogin();
       toast.success("로그인 성공 🎉");
       onClose();
       router.refresh();
-    } catch (err: any) {
+    } catch {
       toast.error("구글 로그인에 실패했습니다.");
     } finally {
       setLoading(false);
@@ -86,16 +78,29 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4 sm:p-0">
-      <div className="bg-gray-100 rounded shadow-lg w-full max-w-md sm:w-96 p-6 sm:p-8 relative overflow-y-auto max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center
+                    bg-black/80 backdrop-blur-md p-4"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
+        className="relative w-full max-w-md p-8 rounded-2xl
+                   bg-[#0f0f0f]
+                   border border-white/10
+                   shadow-[0_0_60px_rgba(99,102,241,0.15)]"
+      >
         <button
-          className="absolute top-3 right-3 text-gray-700 text-xl sm:text-2xl"
           onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-white
+                     text-2xl transition"
         >
           &times;
         </button>
 
-        <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-center">
+        <h2 className="text-2xl font-bold text-center text-white mb-8 tracking-wide">
           {mode === "login" ? "로그인" : "회원가입"}
         </h2>
 
@@ -128,18 +133,23 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
-          className="w-full mt-2 bg-red-500 hover:bg-red-600 text-white py-2 sm:py-3 rounded text-sm sm:text-base transition"
+          className="w-full mt-6 py-3 rounded-xl font-semibold text-white
+                     bg-gradient-to-r from-indigo-600 to-purple-600
+                     hover:scale-[1.02] active:scale-[0.98]
+                     transition-all duration-200
+                     shadow-lg shadow-indigo-500/30
+                     disabled:opacity-50"
         >
           구글로 계속하기
         </button>
 
-        <div className="mt-4 text-center text-gray-700 text-xs sm:text-sm">
+        <div className="mt-6 text-center text-gray-400 text-sm">
           {mode === "login" ? (
             <>
               계정이 없으신가요?{" "}
               <button
-                className="text-blue-600 underline"
                 onClick={() => setMode("signup")}
+                className="text-indigo-400 hover:text-indigo-300 transition"
               >
                 회원가입
               </button>
@@ -148,15 +158,15 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
             <>
               이미 계정이 있나요?{" "}
               <button
-                className="text-blue-600 underline"
                 onClick={() => setMode("login")}
+                className="text-indigo-400 hover:text-indigo-300 transition"
               >
                 로그인
               </button>
             </>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>,
     document.body,
   );

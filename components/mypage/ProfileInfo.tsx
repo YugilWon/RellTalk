@@ -37,7 +37,6 @@ export default function ProfileInfo({
   } = useChangePassword();
 
   const isGoogleLogin = provider !== "email";
-  console.log(provider);
 
   return (
     <div className="max-w-2xl w-full mx-auto bg-gray-900/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-2xl border border-gray-700">
