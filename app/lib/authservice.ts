@@ -1,4 +1,5 @@
 import { supabase } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 export async function signIn(email: string, password: string) {
   const { error } = await supabase.auth.signInWithPassword({
@@ -50,6 +51,9 @@ export async function signUp({
     id: user.id,
     nickname: nickname.trim(),
     avatar_url: avatarUrl,
+    email: user.email,
+    provider: "email",
+    role: "user",
   });
 
   if (profileError) {
@@ -61,13 +65,39 @@ export async function signUp({
   }
 }
 
+// export async function signInWithGoogle() {
+//   const { error } = await supabase.auth.signInWithOAuth({
+//     provider: "google",
+//     options: {
+//       redirectTo: window.location.href,
+//     },
+//   });
+
+//   if (error) throw error;
+// }
+
 export async function signInWithGoogle() {
   const { error } = await supabase.auth.signInWithOAuth({
     provider: "google",
-    options: {
-      redirectTo: window.location.href,
-    },
+    options: { redirectTo: window.location.origin + "/auth/callback" },
   });
 
   if (error) throw error;
+}
+
+export async function handleOAuthUser(
+  user: User,
+  nickname?: string,
+  avatarUrl?: string,
+) {
+  const { error: profileError } = await supabase.from("profiles").upsert({
+    id: user.id,
+    nickname: nickname?.trim(),
+    avatar_url: avatarUrl ?? null,
+    email: user.email,
+    provider: "google",
+    role: "user",
+  });
+
+  if (profileError) throw profileError;
 }

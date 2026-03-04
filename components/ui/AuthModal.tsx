@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 import { useAuthActions } from "../auth/useAuthActions";
 import LoginForm from "../auth/LoginForm";
-import SignupForm from "../auth/SignIUpForm";
+import SignupForm from "../auth/SignUpForm";
 import toast from "react-hot-toast";
 
 type Mode = "login" | "signup";
@@ -60,7 +60,7 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         avatar,
       });
 
-      toast.success("이메일을 확인해주세요 📩");
+      toast.success("회원가입이 완료되었습니다.");
       onClose();
     } catch (err: any) {
       console.error(err);

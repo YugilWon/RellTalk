@@ -1,6 +1,7 @@
 import { getMoviesByGenre, getGenres } from "@/app/lib/movies";
 import MovieInfiniteList from "@/components/infinite/MovieInfiniteList";
 import { Genre } from "@/(types)/interface";
+import GenresPage from "../page";
 
 export const dynamic = "force-static";
 
@@ -19,10 +20,13 @@ export default async function GenreDetailPage({
   const genreName = genre?.name ?? "Unknown";
 
   return (
-    <MovieInfiniteList
-      initialMovies={initialData}
-      apiPath={`/api/genre/${params.genreId}`}
-      title={`🎬 ${genreName} 영화`}
-    />
+    <>
+      <GenresPage />
+      <MovieInfiniteList
+        initialMovies={initialData}
+        apiPath={`/api/genre/${params.genreId}`}
+        title={`🎬 ${genreName} 영화`}
+      />
+    </>
   );
 }
