@@ -11,24 +11,43 @@ export default function OAuthCallbackPage() {
     async function init() {
       const {
         data: { user },
-        error,
+        error: userError,
       } = await supabase.auth.getUser();
 
       if (!user) {
-        console.error(error);
+        console.error(userError);
         return;
       }
 
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: user.id,
-        nickname: user.user_metadata?.full_name ?? null,
-        avatar_url: null,
-        email: user.email,
-        provider: "google",
-        role: "user",
-      });
+      try {
+        const { data: existingProfile, error: selectError } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("id", user.id)
+          .single();
 
-      if (profileError) console.error(profileError);
+        if (selectError && selectError.code !== "PGRST116") {
+          console.error(selectError);
+          return;
+        }
+
+        if (!existingProfile) {
+          const { error: insertError } = await supabase
+            .from("profiles")
+            .insert({
+              id: user.id,
+              nickname: user.user_metadata?.full_name ?? null,
+              avatar_url: user.user_metadata?.avatar_url ?? null,
+              email: user.email,
+              provider: "google",
+              role: "user",
+            });
+
+          if (insertError) console.error(insertError);
+        }
+      } catch (err) {
+        console.error(err);
+      }
 
       router.replace("/");
     }
