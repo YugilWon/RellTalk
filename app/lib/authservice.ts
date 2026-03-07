@@ -20,6 +20,10 @@ export async function signUp({
   nickname: string;
   avatar?: File | null;
 }) {
+  if (password.length < 8) {
+    throw new Error("비밀번호는 최소 8자 이상이어야 합니다.");
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,

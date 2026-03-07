@@ -134,6 +134,7 @@ export default function ToolBar({ editor, addImage }: ToolBarProps) {
         >
           YouTube
         </button>
+
         {youtubeOpen && (
           <div className="absolute top-full left-0 mt-1 p-2 bg-zinc-800 border rounded flex gap-1">
             <input
@@ -143,6 +144,7 @@ export default function ToolBar({ editor, addImage }: ToolBarProps) {
               onChange={(e) => setYoutubeUrl(e.target.value)}
               className="px-2 py-1 w-64 bg-zinc-900 border rounded"
             />
+
             <button
               onClick={insertYoutube}
               type="button"

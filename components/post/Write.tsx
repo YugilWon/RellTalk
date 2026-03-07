@@ -86,8 +86,26 @@ export default function Write({ post }: Props) {
         addImage={(file) => addImage(file, editor, setPendingImages)}
       />
 
-      <div className="bg-neutral-900 border border-neutral-700 rounded-lg p-4 min-h-[300px] !text-inherit">
-        <EditorContent editor={editor} />
+      <div
+        className=" border
+       border-neutral-700
+        rounded
+        p-4
+        h-[400px]
+        overflow-y-auto
+        cursor-text"
+      >
+        <EditorContent
+          editor={editor}
+          className="
+          border
+          border-neutral-700
+          rounded
+          p-4
+          min-h-[400px]
+          cursor-text
+        "
+        />
       </div>
 
       <button

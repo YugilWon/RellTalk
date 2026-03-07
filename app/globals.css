@@ -32,6 +32,11 @@ body {
   }
 }
 
+.ProseMirror {
+  min-height: 400px;
+  outline: none;
+}
+
 .ProseMirror h1 {
   font-size: 2rem;
   font-weight: bold;

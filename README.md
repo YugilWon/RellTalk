@@ -1,4 +1,5 @@
 ---
+https://relltalk.vercel.app/
 
 Demo Account (테스트용)
 
@@ -37,12 +38,12 @@ app
 │   └── recommend         # 추천 기능
 │
 ├── api                   # Route Handler (Server Only)
-│   ├── auth
+│   ├── genre
 │   ├── post
 │   ├── popular
 │   ├── search
-│   └── change-password
-│
+│   ├── change-password
+│   └── mypost
 ├── auth/callback         # 이메일 인증 처리
 ├── server                # 서버 전용 비즈니스 로직
 └── lib                   # 외부 API 유틸 함수
