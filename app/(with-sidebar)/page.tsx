@@ -3,6 +3,7 @@ import { getYoutubeTrailerId } from "../lib/youtube";
 import MoviePage from "@/components/movie/MoviePage";
 import YoutubePlayer from "@/components/youtube/youtube";
 import GlobalSearch from "@/components/ui/Search";
+import Notification from "@/components/notification/Notification";
 
 export default async function Page() {
   const movies = await getPopularMovies();
@@ -14,7 +15,8 @@ export default async function Page() {
 
   return (
     <>
-      <div className="sticky top-4 z-50 flex justify-end mb-4">
+      <div className="sticky top-4 z-50 flex justify-end items-center gap-3 mb-4 px-4">
+        <Notification />
         <GlobalSearch />
       </div>
 

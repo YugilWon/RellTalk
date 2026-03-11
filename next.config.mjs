@@ -8,7 +8,11 @@ const analyzer = withBundleAnalyzer({
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["image.tmdb.org", "vbgtbpmlzcptwhyezzji.supabase.co"],
+    domains: [
+      "image.tmdb.org",
+      "vbgtbpmlzcptwhyezzji.supabase.co",
+      "lh3.googleusercontent.com",
+    ],
   },
 };
 

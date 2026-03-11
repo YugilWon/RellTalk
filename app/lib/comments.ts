@@ -186,7 +186,11 @@ export async function createComment({
   content: string;
   parentId?: string | null;
 }) {
-  const { data, error } = await supabase
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: comment, error } = await supabase
     .from("comments")
     .insert({
       target_id: targetId,
@@ -199,9 +203,68 @@ export async function createComment({
     .single();
 
   if (error) throw error;
-  return data;
-}
 
+  if (!parentId) {
+    if (targetType === "post") {
+      const { data: post } = await supabase
+        .from("posts")
+        .select("user_id")
+        .eq("id", targetId)
+        .single();
+
+      if (post?.user_id && post.user_id !== user?.id) {
+        await supabase.from("notifications").insert({
+          user_id: post.user_id,
+          actor_id: user?.id,
+          type: "comment",
+          post_id: targetId,
+          comment_id: comment.id,
+          target_type: targetType,
+        });
+      }
+    }
+
+    if (targetType === "movie") {
+      const { data: movieComment } = await supabase
+        .from("comments")
+        .select("user_id")
+        .eq("target_id", targetId)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .single();
+
+      if (movieComment?.user_id && movieComment.user_id !== user?.id) {
+        await supabase.from("notifications").insert({
+          user_id: movieComment.user_id,
+          actor_id: user?.id,
+          type: "comment",
+          post_id: targetId,
+          comment_id: comment.id,
+          target_type: targetType,
+        });
+      }
+    }
+  } else {
+    const { data: parentComment } = await supabase
+      .from("comments")
+      .select("user_id")
+      .eq("id", parentId)
+      .single();
+
+    if (parentComment?.user_id && parentComment.user_id !== user?.id) {
+      await supabase.from("notifications").insert({
+        user_id: parentComment.user_id,
+        actor_id: user?.id,
+        type: "reply",
+        post_id: targetId,
+        comment_id: comment.id,
+        target_type: targetType,
+      });
+    }
+  }
+
+  return comment;
+}
 export async function updateComment({
   id,
   content,

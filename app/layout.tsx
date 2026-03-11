@@ -29,6 +29,7 @@ export default function RootLayout({
             <AuthProvider>
               {children}
               <Toaster position="top-center" />
+
               <Analytics />
               <SpeedInsights />
             </AuthProvider>

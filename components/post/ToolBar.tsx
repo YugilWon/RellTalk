@@ -28,6 +28,10 @@ export default function ToolBar({ editor, addImage }: ToolBarProps) {
     input.click();
   };
 
+  const setFontSize = (size: string) => {
+    editor.chain().focus().setFontSize(size).run();
+  };
+
   const insertYoutube = () => {
     if (!youtubeUrl) return;
 
@@ -134,6 +138,19 @@ export default function ToolBar({ editor, addImage }: ToolBarProps) {
         >
           YouTube
         </button>
+
+        <select
+          onChange={(e) => setFontSize(e.target.value)}
+          className="px-2 py-1 bg-zinc-900 border rounded text-sm"
+        >
+          <option value="">Size</option>
+          <option value="12px">12</option>
+          <option value="16px">16</option>
+          <option value="18px">18</option>
+          <option value="24px">24</option>
+          <option value="32px">32</option>
+          <option value="48px">48</option>
+        </select>
 
         {youtubeOpen && (
           <div className="absolute top-full left-0 mt-1 p-2 bg-zinc-800 border rounded flex gap-1">

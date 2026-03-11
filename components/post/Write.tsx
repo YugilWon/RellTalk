@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import { addImage, handleSubmit } from "./post";
 import { Post } from "@/(types)/interface";
+import { FontSize } from "./FontSize";
 
 interface Props {
   post?: Post;
@@ -34,6 +35,7 @@ export default function Write({ post }: Props) {
       StarterKit,
       TextStyle,
       Color,
+      FontSize,
       Link.configure({
         openOnClick: false,
         autolink: true,
