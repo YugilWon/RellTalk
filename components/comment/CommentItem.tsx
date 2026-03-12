@@ -23,6 +23,7 @@ export default function CommentCard({
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [replying, setReplying] = useState(false);
+  const [showReplies, setShowReplies] = useState(false);
   const ref = useRef<HTMLLIElement>(null);
 
   const targetHash =
@@ -30,12 +31,23 @@ export default function CommentCard({
       ? window.location.hash.replace("#comment-", "")
       : null;
 
-  const [showReplies, setShowReplies] = useState(false);
-
   const { data: childComments = [], isLoading } = useChildComments(
     showReplies ? comment.id : null,
     user?.id,
   );
+
+  const { data: likeSummary } = useLikeSummary(comment.id, "comment", user?.id);
+  const likeMutation = useToggleLike(comment.id, "comment", user?.id);
+
+  const handleLike = () => {
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+    likeMutation.mutate(likeSummary?.isLiked ?? false);
+  };
+
+  const isEdited = comment.updatedAt !== comment.createdAt;
 
   useEffect(() => {
     if (!targetHash) return;
@@ -43,7 +55,12 @@ export default function CommentCard({
     const isTargetSelf = comment.id === targetHash;
     const isTargetChild = childComments.some((c) => c.id === targetHash);
 
-    if ((isTargetSelf || isTargetChild) && !showReplies) {
+    if (
+      !showReplies &&
+      !isTargetSelf &&
+      !isTargetChild &&
+      comment.replyCount > 0
+    ) {
       setShowReplies(true);
       return;
     }
@@ -62,20 +79,7 @@ export default function CommentCard({
         }, 2000);
       }, 100);
     }
-  }, [childComments, targetHash, comment.id, showReplies]);
-
-  const isEdited = comment.updatedAt !== comment.createdAt;
-
-  const { data: likeSummary } = useLikeSummary(comment.id, "comment", user?.id);
-  const likeMutation = useToggleLike(comment.id, "comment", user?.id);
-
-  const handleLike = () => {
-    if (!user) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-    likeMutation.mutate(likeSummary?.isLiked ?? false);
-  };
+  }, [childComments, targetHash, comment.id, showReplies, comment.replyCount]);
 
   return (
     <li
