@@ -3,9 +3,27 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Props } from "../../(types)/interface";
+import NoImage from "@/assets/NoImage.png";
+import { Movie } from "@/(types)/interface";
 
-const MovieCard = ({ movie }: Props) => {
+interface MovieCardProps {
+  movie: Movie;
+  imageError?: boolean;
+  setImageError?: (id: number) => void;
+}
+
+const MovieCard: React.FC<MovieCardProps> = ({
+  movie,
+  imageError,
+  setImageError,
+}) => {
+  const getImageUrl = () => {
+    if (imageError) return NoImage;
+    return movie.backdrop_path
+      ? `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`
+      : NoImage;
+  };
+
   return (
     <li
       className="
@@ -16,19 +34,14 @@ const MovieCard = ({ movie }: Props) => {
       "
     >
       <Link href={`/detail/${movie.id}`} prefetch>
-        {movie.backdrop_path ? (
-          <Image
-            src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
-            alt={movie.title}
-            width={500}
-            height={281}
-            className="w-full h-48 object-cover transition-all duration-300 group-hover:scale-105 group-hover:blur-[1px]"
-          />
-        ) : (
-          <div className="w-full h-48 bg-gray-800 flex items-center justify-center text-white text-sm">
-            이미지 없음
-          </div>
-        )}
+        <Image
+          src={getImageUrl()}
+          alt={movie.title}
+          width={500}
+          height={281}
+          className="w-full h-48 object-cover transition-all duration-300 group-hover:scale-105 group-hover:blur-[1px]"
+          onError={() => setImageError?.(movie.id)}
+        />
 
         <div
           className="
@@ -60,4 +73,6 @@ const MovieCard = ({ movie }: Props) => {
   );
 };
 
-export default MovieCard;
+MovieCard.displayName = "MovieCard";
+
+export default React.memo(MovieCard);
