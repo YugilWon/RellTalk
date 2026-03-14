@@ -154,6 +154,7 @@ export async function getMoviesByGenre(
   if (!res.ok) return [];
 
   const data: TMDBMovieListResponse = await res.json();
+  const movies = data.results.map(normalizeMovieList);
 
-  return data.results.map(normalizeMovieList);
+  return movies;
 }

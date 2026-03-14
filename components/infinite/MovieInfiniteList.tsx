@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Movie } from "@/(types)/interface";
 import MovieCard from "../movie/MovieCard";
 
@@ -19,32 +19,44 @@ export default function MovieInfiniteList({
   const [page, setPage] = useState(initialMovies.length ? 2 : 1);
   const [more, setMore] = useState(true);
   const observerRef = useRef<HTMLDivElement | null>(null);
+
   const [imageError, setImageError] = useState<Record<number, boolean>>({});
 
-  const handleImageError = (id: number) => {
-    setImageError((prev) => ({ ...prev, [id]: true }));
-  };
+  const handleImageError = useCallback((id: number) => {
+    setImageError((prev) => {
+      if (prev[id]) return prev;
+      return { ...prev, [id]: true };
+    });
+  }, []);
 
   useEffect(() => {
+    if (page === 1 && initialMovies.length > 0) return;
+    if (!more) return;
+
     const fetchMovies = async () => {
-      const res = await fetch(`${apiPath}?page=${page}`);
-      const data = await res.json();
+      try {
+        const res = await fetch(`${apiPath}?page=${page}`);
+        const data = await res.json();
 
-      if (!data.results || data.results.length === 0) {
+        if (!data.results || data.results.length === 0) {
+          setMore(false);
+          return;
+        }
+
+        setMovies((prev) => {
+          const newMovies = data.results.filter(
+            (movie: Movie) => !prev.some((p) => p.id === movie.id),
+          );
+          return [...prev, ...newMovies];
+        });
+      } catch (err) {
+        console.error("영화 데이터 fetch 실패:", err);
         setMore(false);
-        return;
       }
-
-      setMovies((prev) => {
-        const newMovies = data.results.filter(
-          (movie: Movie) => !prev.some((p) => p.id === movie.id),
-        );
-        return [...prev, ...newMovies];
-      });
     };
 
     fetchMovies();
-  }, [page, apiPath]);
+  }, [page, apiPath, initialMovies, more]);
 
   useEffect(() => {
     if (!more) return;
@@ -67,18 +79,7 @@ export default function MovieInfiniteList({
     <section className="mt-16">
       <h2 className="text-2xl font-bold mb-6 text-white">{title}</h2>
 
-      <ul
-        className="
-          grid
-          grid-cols-2
-          sm:grid-cols-3
-          md:grid-cols-4
-          lg:grid-cols-5
-          gap-6
-          justify-items-center
-          list-none
-        "
-      >
+      <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 justify-items-center list-none">
         {movies.map((movie) => (
           <MovieCard
             key={movie.id}

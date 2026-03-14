@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Comments from "@/components/comment/Comment";
-import { getBestTrailer, getMovie } from "@/app/lib/movies";
+import { getBestTrailer } from "@/app/lib/movies";
 import OverView from "@/components/detail/OverView";
 import { fetchMovieDetail, normalizeMovieDetail } from "@/app/lib/movies";
 
