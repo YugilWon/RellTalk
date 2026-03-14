@@ -19,10 +19,6 @@
 ./app/api/change-password
 ./app/api/genre
 ./app/api/genre/[genreId]
-./app/api/google
-./app/api/google/login
-./app/api/logout
-./app/api/logout/next
 ./app/api/mypost
 ./app/api/popular
 ./app/api/post

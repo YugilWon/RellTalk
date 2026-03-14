@@ -85,4 +85,4 @@ function ViewMode({
   );
 }
 
-export default ViewMode;
+export default React.memo(ViewMode);

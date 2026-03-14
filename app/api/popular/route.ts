@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const API_KEY = process.env.NEXT_PUBLIC_APIKEY!;
+const API_KEY = process.env.API_KEY!;
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -14,3 +14,4 @@ export async function GET(req: Request) {
 
   return NextResponse.json(data);
 }
+

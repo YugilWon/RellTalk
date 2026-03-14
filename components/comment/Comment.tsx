@@ -67,7 +67,6 @@ export default function Comments({
               updateMutation={updateMutation}
               deleteMutation={deleteMutation}
               createMutation={createMutation}
-              comments={comments}
             />
           ))}
         </ul>

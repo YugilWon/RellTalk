@@ -4,6 +4,8 @@ import { EditModeProps } from "@/(types)/interface";
 function EditMode({ comment, updateMutation, setEditing }: EditModeProps) {
   const [editContent, setEditContent] = useState(comment.content);
 
+  console.log("나 에딧모드 실행됐어");
+
   const handleSave = () => {
     if (!window.confirm("댓글을 수정하시겠습니까?")) return;
 
@@ -44,4 +46,4 @@ function EditMode({ comment, updateMutation, setEditing }: EditModeProps) {
   );
 }
 
-export default EditMode;
+export default React.memo(EditMode);

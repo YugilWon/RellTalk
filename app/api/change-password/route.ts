@@ -41,6 +41,7 @@ export async function POST(req: Request) {
     const { error: updateError } = await supabase.auth.updateUser({
       password: newPassword,
     });
+    
     if (newPassword.length < 8) {
       return NextResponse.json(
         { message: "비밀번호는 최소 8자 이상이어야 합니다." },
