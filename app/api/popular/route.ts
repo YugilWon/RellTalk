@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 const API_KEY = process.env.API_KEY!;
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
