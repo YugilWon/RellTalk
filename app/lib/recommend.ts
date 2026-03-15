@@ -1,9 +1,7 @@
-import { createClient } from "@/utils/supabase/server";
+import { supabasePublic } from "@/utils/supabase/public";
 
 export async function getLikedMovie() {
-  const supabase = createClient();
-
-  const { data, error } = await supabase
+  const { data, error } = await supabasePublic
     .from("likes")
     .select("target_id")
     .eq("target_type", "movie");
@@ -12,7 +10,7 @@ export async function getLikedMovie() {
 
   const countMap: Record<string, number> = {};
 
-  data.forEach((item) => {
+  data.forEach((item: { target_id: string }) => {
     countMap[item.target_id] = (countMap[item.target_id] || 0) + 1;
   });
 

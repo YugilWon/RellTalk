@@ -1,7 +1,6 @@
 import React from "react";
 import TopLiked from "@/components/recommend/TopLiked";
 import TMDBSSR from "@/components/recommend/TMDB_BySSR";
-export const dynamic = "force-dynamic";
 
 const RecommendPage = () => {
   return (
