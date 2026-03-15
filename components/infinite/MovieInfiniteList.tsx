@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Movie } from "@/(types)/interface";
+import { Movie } from "@/types/interface";
 import MovieCard from "../movie/MovieCard";
 
 interface MovieInfiniteListProps {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { EditModeProps } from "@/(types)/interface";
+import { EditModeProps } from "@/types/interface";
 
 function EditMode({ comment, updateMutation, setEditing }: EditModeProps) {
   const [editContent, setEditContent] = useState(comment.content);

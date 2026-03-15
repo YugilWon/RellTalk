@@ -6,6 +6,8 @@ import { fetchMovieDetail, normalizeMovieDetail } from "@/app/lib/movies";
 
 import MovieLike from "@/components/like/MovieLike";
 
+export const revalidate = 3600;
+
 export default async function DetailPage({
   params,
 }: {

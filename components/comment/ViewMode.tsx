@@ -1,6 +1,6 @@
 import React from "react";
 import LikeButton from "../like/LikeButton";
-import { ViewModeProps } from "@/(types)/interface";
+import { ViewModeProps } from "@/types/interface";
 import Image from "next/image";
 
 function ViewMode({

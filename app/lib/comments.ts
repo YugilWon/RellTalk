@@ -1,5 +1,5 @@
 import { supabase } from "@/utils/supabase/client";
-import { CommentTargetType } from "@/(types)/interface";
+import { CommentTargetType } from "@/types/interface";
 
 import { fetchLikes } from "./likes";
 

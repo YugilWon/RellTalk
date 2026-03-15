@@ -1,4 +1,4 @@
-import { Movie, GenresResponse } from "@/(types)/interface";
+import { Movie, GenresResponse } from "@/types/interface";
 import { getYoutubeTrailerId } from "./youtube";
 
 const API_KEY = process.env.API_KEY!;

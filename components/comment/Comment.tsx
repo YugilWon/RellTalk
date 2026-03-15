@@ -7,7 +7,7 @@ import {
   useDeleteComment,
 } from "./useComment";
 import { useUser } from "@/hooks/useUser";
-import { CommentTargetType } from "@/(types)/interface";
+import { CommentTargetType } from "@/types/interface";
 import CommentCard from "./CommentItem";
 import CommentForm from "./CommentForm";
 import LoginRequiredMessage from "../common/LoginLequireMessage";

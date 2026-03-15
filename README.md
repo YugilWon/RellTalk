@@ -82,25 +82,19 @@ PW: 11111111
 UI 라우트와 API 라우트를 명확히 분리하고 서버 로직과 클라이언트 로직의 책임을 구분했습니다.
 
 ```
-app
-├── (with-sidebar)
-│   ├── detail/[id]
-│   ├── genres/[genreId]
-│   ├── post
-│   ├── mypage
-│   └── recommend
-│
-├── api
-│   ├── genre
-│   ├── post
-│   ├── popular
-│   ├── search
-│   ├── change-password
-│   └── mypost
-│
-├── auth/callback
-├── server
-└── lib
+📦 movie
+ ┣ 📂 app
+ ┃ ┣ 📂 (with-sidebar)
+ ┃ ┃ ┣ 📂 detail
+ ┃ ┃ ┃ ┗ 📂 [id]
+ ┃ ┃ ┣ 📂 genres
+ ┃ ┃ ┗ 📂 recommend
+ ┃ ┣ 📂 api
+ ┃ ┗ 📂 auth
+ ┣ 📂 components
+ ┣ 📂 hooks
+ ┣ 📂 utils
+ ┗ 📂 types
 ```
 
 ---

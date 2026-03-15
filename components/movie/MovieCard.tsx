@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import NoImage from "@/assets/NoImage.png";
-import { Movie } from "@/(types)/interface";
+import { Movie } from "@/types/interface";
 
 interface MovieCardProps {
   movie: Movie;

@@ -1,4 +1,4 @@
-import { LikeTargetType } from "@/(types)/interface";
+import { LikeTargetType } from "@/types/interface";
 import { supabase } from "@/utils/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 

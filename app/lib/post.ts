@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
-import { Post } from "@/(types)/interface";
+import { Post } from "@/types/interface";
 
 interface GetPostsOptions {
   page?: number;

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Post } from "@/(types)/interface";
+import { Post } from "@/types/interface";
 import DOMPurify from "dompurify";
 import PostLike from "../like/PostLike";
 import { useUser } from "@/hooks/useUser";

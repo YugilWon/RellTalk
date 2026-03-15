@@ -1,6 +1,6 @@
 "use client";
 import MovieCard from "./MovieCard";
-import { Movie } from "@/(types)/interface";
+import { Movie } from "@/types/interface";
 
 export default function MovieList({ movies }: { movies: Movie[] }) {
   return (

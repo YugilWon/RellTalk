@@ -1,6 +1,6 @@
 import { getMoviesByGenre, getGenres } from "@/app/lib/movies";
 import MovieInfiniteList from "@/components/infinite/MovieInfiniteList";
-import { Genre } from "@/(types)/interface";
+import { Genre } from "@/types/interface";
 import GenresPage from "../page";
 
 export const dynamic = "force-static";

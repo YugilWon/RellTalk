@@ -7,7 +7,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { CommentCardProps, CommentWithLike } from "@/(types)/interface";
+import { CommentCardProps, CommentWithLike } from "@/types/interface";
 import EditMode from "./EidtMode";
 import ViewMode from "./ViewMode";
 import { useToggleLike, useLikeSummary } from "@/hooks/useLike";

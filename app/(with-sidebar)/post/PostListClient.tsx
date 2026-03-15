@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import PostList from "@/components/post/PostList";
-import { Post } from "@/(types)/interface";
+import { Post } from "@/types/interface";
 import { usePostQuery } from "@/hooks/usePostQuery";
 interface Props {
   initialPosts: Post[];

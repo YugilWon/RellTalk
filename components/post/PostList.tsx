@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Post } from "@/(types)/interface";
+import { Post } from "@/types/interface";
 import PostCard from "./PostCard";
 
 interface PostListProps {

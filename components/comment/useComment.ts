@@ -10,7 +10,7 @@ import {
   CommentTargetType,
   CreateCommentPayload,
   UpdateCommentPayload,
-} from "@/(types)/interface";
+} from "@/types/interface";
 
 export const useComments = (
   targetId: string,

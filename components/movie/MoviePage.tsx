@@ -1,4 +1,4 @@
-import { Movie } from "@/(types)/interface";
+import { Movie } from "@/types/interface";
 import { Suspense } from "react";
 import MovieList from "./MovieList";
 import MovieListSkeleton from "./MovieListSkeleton";
