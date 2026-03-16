@@ -65,7 +65,7 @@ export default function ProfileInfo({
           </div>
 
           <p className="text-gray-400 text-sm">
-            닉네임과 프로필 이미지를 변경할 수 있습니다. (이미지 클릭)
+            닉네임과 프로필 이미지를 변경할 수 있습니다(최대 5MB). (이미지 클릭)
           </p>
         </div>
       </div>

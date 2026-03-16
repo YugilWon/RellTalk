@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { supabase } from "@/utils/supabase/client";
+import { compressImage } from "@/app/lib/compressImage";
 
 interface ProfileAvatarProps {
   userId: string;
@@ -16,28 +17,34 @@ export default function ProfileAvatar({
   onAvatarChange,
 }: ProfileAvatarProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const MAX_UPLOAD_SIZE = 5 * 1024 * 1024;
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
+
     const file = e.target.files[0];
     setIsUploading(true);
 
+    if (file.size > MAX_UPLOAD_SIZE) {
+      alert("이미지는 5MB 이하만 업로드 가능합니다.");
+      return;
+    }
+
     try {
-      const fileExt = file.name.split(".").pop();
+      const compressedFile = await compressImage(file);
+
+      const fileExt = compressedFile.name.split(".").pop();
       const fileName = `${userId}-${Date.now()}.${fileExt}`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, compressedFile, { upsert: true });
+
       if (uploadError) throw uploadError;
 
       const { data: publicData } = supabase.storage
         .from("avatars")
         .getPublicUrl(fileName);
-
-      if (!publicData?.publicUrl) {
-        throw new Error("Public URL 생성 실패");
-      }
 
       const publicUrl = publicData.publicUrl;
 

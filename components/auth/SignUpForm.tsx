@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import PasswordInput from "../common/PasswordInput";
+import { compressImage } from "@/app/lib/compressImage";
 
 interface Props {
   email: string;
@@ -34,6 +35,8 @@ export default function SignupForm({
   onSubmit,
 }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const MAX_UPLOAD_SIZE = 5 * 1024 * 1024;
+  const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
   useEffect(() => {
     if (!avatar) {
@@ -44,6 +47,29 @@ export default function SignupForm({
     setPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
   }, [avatar]);
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      onAvatarChange(null);
+      return;
+    }
+
+    if (file.size > MAX_UPLOAD_SIZE) {
+      alert("이미지는 5MB 이하만 업로드 가능합니다.");
+      return;
+    }
+
+    const compressedFile = await compressImage(file);
+
+    if (compressedFile.size > MAX_FILE_SIZE) {
+      alert("파일 사이즈가 너무 큽니다.");
+      return;
+    }
+
+    onAvatarChange(compressedFile);
+  };
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
@@ -74,7 +100,7 @@ export default function SignupForm({
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={(e) => onAvatarChange(e.target.files?.[0] ?? null)}
+          onChange={handleAvatarChange}
           disabled={loading}
         />
       </label>

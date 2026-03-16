@@ -1,5 +1,8 @@
 import { supabase } from "@/utils/supabase/client";
 
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+
 export async function signIn(email: string, password: string) {
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -24,6 +27,22 @@ export async function signUp({
     throw new Error("비밀번호는 최소 8자 이상이어야 합니다.");
   }
 
+  const trimmedNickname = nickname.trim();
+
+  if (!trimmedNickname) {
+    throw new Error("닉네임을 입력해주세요.");
+  }
+
+  if (avatar) {
+    if (avatar.size > MAX_FILE_SIZE) {
+      throw new Error("이미지는 2MB 이하만 업로드 가능합니다.");
+    }
+
+    if (!ALLOWED_TYPES.includes(avatar.type)) {
+      throw new Error("지원하지 않는 이미지 형식입니다.");
+    }
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -38,11 +57,15 @@ export async function signUp({
 
   if (avatar) {
     const ext = avatar.name.split(".").pop();
-    const filePath = `${user.id}.${ext}`;
+
+    const filePath = `${user.id}-${Date.now()}.${ext}`;
 
     const { error: uploadError } = await supabase.storage
       .from("avatars")
-      .upload(filePath, avatar, { upsert: true });
+      .upload(filePath, avatar, {
+        upsert: false,
+        cacheControl: "3600",
+      });
 
     if (uploadError) throw uploadError;
 
@@ -52,7 +75,7 @@ export async function signUp({
 
   const { error: profileError } = await supabase.from("profiles").upsert({
     id: user.id,
-    nickname: nickname.trim(),
+    nickname: trimmedNickname,
     avatar_url: avatarUrl,
     email: user.email,
     provider: "email",

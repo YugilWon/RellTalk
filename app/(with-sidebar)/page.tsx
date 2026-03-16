@@ -10,14 +10,8 @@ export default async function Page() {
 
   const randomMovie = movies[Math.floor(Math.random() * movies.length)];
 
-  console.log("movies:", movies.length);
-  console.log("randomMovie:", randomMovie.title);
-  console.log("mainTrailerId:", randomMovie.mainTrailerId);
-
   const trailerId =
     randomMovie.mainTrailerId ?? (await getYoutubeTrailerId(randomMovie.title));
-
-  console.log("FINAL trailerId:", trailerId);
 
   return (
     <>
