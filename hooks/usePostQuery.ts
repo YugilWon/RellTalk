@@ -1,18 +1,19 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { Post } from "@/types/interface";
 
 interface Params {
   page: number;
   pageSize: number;
   initialData?: {
-    posts: any[];
+    posts: Post[];
     totalCount: number;
   };
 }
 
 export function usePostQuery({ page, pageSize, initialData }: Params) {
-  return useQuery({
+  return useQuery<{ posts: Post[]; totalCount: number }>({
     queryKey: ["posts", page],
     queryFn: async () => {
       const res = await fetch(`/api/post?page=${page}&limit=${pageSize}`);

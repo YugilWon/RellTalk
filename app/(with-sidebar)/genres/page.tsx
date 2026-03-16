@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { getGenres } from "@/app/lib/movies";
 
+export interface Genre {
+  id: number;
+  name: string;
+}
+
 export default async function GenresPage() {
   const data = await getGenres();
 
@@ -9,7 +14,7 @@ export default async function GenresPage() {
       <h1 className="text-2xl font-bold mb-6">장르별 영화</h1>
 
       <div className="flex flex-wrap gap-3">
-        {data.genres.map((genre: any) => (
+        {data.genres.map((genre: Genre) => (
           <Link
             key={genre.id}
             href={`/genres/${genre.id}`}

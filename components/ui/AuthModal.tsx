@@ -56,8 +56,12 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
       await signup({ email, password, nickname, avatar });
       toast.success("회원가입이 완료되었습니다.");
       onClose();
-    } catch (err: any) {
-      toast.error(err.message || "처리에 실패했습니다.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("처리에 실패했습니다.");
+      }
     } finally {
       setLoading(false);
     }

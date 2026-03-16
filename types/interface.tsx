@@ -78,7 +78,7 @@ export type CommentCardProps = {
     void,
     Error,
     { targetId: string; isLiked: boolean },
-    { previousData: any[] } | undefined
+    { previousData: CommentWithLike[] } | undefined
   >;
   createMutation: UseMutationResult<unknown, Error, CreateCommentPayload>;
 };
@@ -146,3 +146,23 @@ export interface Genre {
 export interface GenresResponse {
   genres: Genre[];
 }
+
+export type NotificationType = "comment" | "reply";
+
+export type NotificationTargetType = "movie" | "post";
+
+export type NotificationActor = {
+  nickname: string;
+};
+
+export type Notification = {
+  id: string;
+  user_id: string;
+  post_id: string;
+  comment_id?: string;
+  type: NotificationType;
+  is_read: boolean;
+  created_at: string;
+  target_type?: NotificationTargetType;
+  actor?: NotificationActor;
+};

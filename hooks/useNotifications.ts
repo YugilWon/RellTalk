@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase/client";
+import { Notification } from "@/types/interface";
 
 export function useNotifications(userId?: string) {
   const [count, setCount] = useState(0);
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const fetchNotifications = async () => {
     if (!userId) return;

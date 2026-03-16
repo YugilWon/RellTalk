@@ -2,6 +2,11 @@ import { LikeTargetType } from "@/types/interface";
 import { supabase } from "@/utils/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
+type LikeSummary = {
+  likeCount: number;
+  isLiked: boolean;
+};
+
 export const addLike = async (
   targetId: string,
   targetType: LikeTargetType,
@@ -52,9 +57,9 @@ export const useToggleLike = (
     onMutate: async (isLiked) => {
       await queryClient.cancelQueries({ queryKey });
 
-      const previous = queryClient.getQueryData(queryKey);
+      const previous = queryClient.getQueryData<LikeSummary>(queryKey);
 
-      queryClient.setQueryData(queryKey, (old: any) => {
+      queryClient.setQueryData<LikeSummary>(queryKey, (old) => {
         if (!old) return old;
 
         return {

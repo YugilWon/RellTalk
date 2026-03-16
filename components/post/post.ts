@@ -1,5 +1,5 @@
 import { supabase } from "@/utils/supabase/client";
-import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
 import { Editor } from "@tiptap/react";
 
 export const addImage = (
@@ -21,7 +21,7 @@ export const handleSubmit = async (
   editor: Editor,
   pendingImages: { file: File; tempUrl: string }[],
   setIsSubmitting: (value: boolean) => void,
-  router: any,
+  router: ReturnType<typeof useRouter>,
   postId?: string,
 ) => {
   if (!editor || !title.trim()) return;

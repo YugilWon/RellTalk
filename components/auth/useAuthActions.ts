@@ -1,6 +1,5 @@
 import { useState } from "react";
 import * as authService from "@/app/lib/authservice";
-import { supabase } from "@/utils/supabase/client";
 
 export interface SignupParams {
   email: string;
@@ -13,20 +12,20 @@ export function useAuthActions() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = async ({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }) => {
+  const login = async (params: { email: string; password: string }) => {
     try {
       setLoading(true);
       setError(null);
-      await authService.signIn(email, password);
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
+      await authService.signIn(params.email, params.password);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+        throw err;
+      } else {
+        const unknownError = new Error("알 수 없는 오류가 발생했습니다.");
+        setError(unknownError.message);
+        throw unknownError;
+      }
     } finally {
       setLoading(false);
     }
@@ -42,9 +41,15 @@ export function useAuthActions() {
       setLoading(true);
       setError(null);
       await authService.signUp(params);
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+        throw err;
+      } else {
+        const unknownError = new Error("알 수 없는 오류가 발생했습니다.");
+        setError(unknownError.message);
+        throw unknownError;
+      }
     } finally {
       setLoading(false);
     }
@@ -55,8 +60,12 @@ export function useAuthActions() {
       setLoading(true);
       setError(null);
       await authService.signInWithGoogle();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("알 수 없는 오류가 발생했습니다.");
+      }
     } finally {
       setLoading(false);
     }

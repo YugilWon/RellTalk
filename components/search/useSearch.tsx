@@ -32,8 +32,12 @@ export const useSearch = () => {
 
       const data = await res.json();
       setResults(data.results || []);
-    } catch (err: any) {
-      if (err.name !== "AbortError") console.error(err);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        if (err.name !== "AbortError") console.error(err);
+      } else {
+        console.error("알 수 없는 오류 발생");
+      }
     } finally {
       setLoading(false);
     }
