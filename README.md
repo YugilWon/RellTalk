@@ -220,6 +220,5 @@ https://relltalk.vercel.app/
 - Next.js App Router 기반 아키텍처 설계
 - Server Component와 Client Component 역할 분리
 - Supabase Auth 및 Row Level Security 적용
-- 댓글 트리 구조 설계
 - 알림 시스템 설계
 - 외부 API 사용 시 캐싱 전략
