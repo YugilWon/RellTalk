@@ -1,7 +1,8 @@
 import { Movie, GenresResponse } from "@/types/interface";
 import { getYoutubeTrailerId } from "./youtube";
 
-const API_KEY = process.env.API_KEY!;
+// const API_KEY = process.env.API_KEY!;
+const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY!;
 
 interface TMDBVideo {
   key: string;
