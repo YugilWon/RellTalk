@@ -13,6 +13,7 @@ import ViewMode from "./ViewMode";
 import { useToggleLike, useLikeSummary } from "@/hooks/useLike";
 import CommentForm from "./CommentForm";
 import { useChildComments } from "./useComment";
+import { supabase } from "@/utils/supabase/client";
 
 type CommentCard = Omit<CommentCardProps, "likeMutation">;
 
@@ -42,6 +43,27 @@ function CommentCard({
 
   const targetHash = targetHashRef.current;
 
+  const [targetParentId, setTargetParentId] = useState<string | null>(null);
+
+  // 알림 타겟이 답글인 경우, 그 부모가 누구인지 DB에서 확인
+  useEffect(() => {
+    if (!targetHash || isReply) return;
+
+    const checkParent = async () => {
+      const { data } = await supabase
+        .from("comments")
+        .select("parent_id")
+        .eq("id", targetHash)
+        .single();
+
+      if (data?.parent_id) {
+        setTargetParentId(data.parent_id);
+      }
+    };
+
+    checkParent();
+  }, [targetHash, isReply]);
+
   const { data: childComments = [] } = useChildComments(
     showReplies ? comment.id : null,
     user?.id,
@@ -70,8 +92,13 @@ function CommentCard({
   }, []);
 
   const isTargetChild = useMemo(() => {
-    return childComments.some((c) => c.id === targetHash);
-  }, [childComments, targetHash]);
+    // 1. 이미 로드된 자식 중에 있거나
+    // 2. DB 확인 결과 이 부모가 타겟의 부모인 경우
+    return (
+      childComments.some((c) => c.id === targetHash) ||
+      targetParentId === comment.id
+    );
+  }, [childComments, targetHash, targetParentId, comment.id]);
 
   useEffect(() => {
     if (!targetHash) return;
@@ -79,15 +106,21 @@ function CommentCard({
     const isTargetSelf = comment.id === targetHash;
 
     if (!initialOpenRef.current) {
-      if (
-        !showReplies &&
-        !isTargetSelf &&
-        !isTargetChild &&
-        comment.replyCount > 0
-      ) {
+      // 알림을 통해 온 경우, 해당 댓글이 이 부모 댓글의 자식이거나 본인일 때만 답글 목록을 엽니다.
+      if (!showReplies && (isTargetSelf || isTargetChild)) {
         setShowReplies(true);
       }
-      initialOpenRef.current = true;
+
+      // 만약 타겟 본인이라면 (부모 댓글일 때), 목록을 열 필요는 없지만
+      // initialOpenRef는 true로 설정하여 중복 실행 방지
+      if (isTargetSelf) {
+        initialOpenRef.current = true;
+      }
+
+      // 자식이 타겟이고 목록이 열렸다면 완료
+      if (isTargetChild && showReplies) {
+        initialOpenRef.current = true;
+      }
     }
 
     if (isTargetSelf || isTargetChild) {
