@@ -22,7 +22,8 @@ function CommentCard({
   updateMutation,
   deleteMutation,
   createMutation,
-}: CommentCard) {
+  isReply = false,
+}: CommentCard & { isReply?: boolean }) {
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [replying, setReplying] = useState(false);
@@ -145,14 +146,19 @@ function CommentCard({
           <CommentForm
             placeholder="답글을 입력하세요"
             autoFocus
+            initialValue={`@${comment.nickname} `}
             onSubmit={(content) => {
               if (!createMutation) return;
+
+              // 2단계 고정을 위해, 현재 댓글이 이미 답글(parentId 존재)이라면
+              // 그 부모의 ID를 parentId로 사용합니다.
+              const finalParentId = comment.parentId || comment.id;
 
               createMutation.mutate({
                 targetId: comment.targetId,
                 targetType: comment.targetType,
                 content,
-                parentId: comment.id,
+                parentId: finalParentId,
               });
 
               setReplying(false);
@@ -162,7 +168,7 @@ function CommentCard({
         </div>
       )}
 
-      {comment.replyCount > 0 && (
+      {!isReply && comment.replyCount > 0 && (
         <button
           className="text-sm text-gray-400 hover:text-white ml-2 text-left"
           onClick={toggleReplies}
@@ -173,7 +179,7 @@ function CommentCard({
         </button>
       )}
 
-      {showReplies && childComments.length > 0 && (
+      {!isReply && showReplies && childComments.length > 0 && (
         <ul className="ml-8 border-l border-neutral-700 pl-4 space-y-2">
           {childComments.map((reply) => (
             <CommentCard
@@ -183,6 +189,7 @@ function CommentCard({
               updateMutation={updateMutation}
               deleteMutation={deleteMutation}
               createMutation={createMutation}
+              isReply={true}
             />
           ))}
         </ul>

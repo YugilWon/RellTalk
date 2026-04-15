@@ -40,7 +40,15 @@ function ViewMode({
       </div>
 
       <p className="text-xs md:text-sm text-gray-200 leading-relaxed mb-2">
-        {comment.content}
+        {comment.content.split(/(@\S+)/).map((part, index) =>
+          part.startsWith("@") ? (
+            <span key={index} className="text-blue-400 font-medium">
+              {part}
+            </span>
+          ) : (
+            part
+          ),
+        )}
       </p>
 
       <div className="flex items-center justify-between text-[11px] md:text-xs text-gray-400">

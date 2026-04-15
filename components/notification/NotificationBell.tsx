@@ -4,6 +4,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { Notification } from "@/types/interface";
 
 export default function NotificationBell({ userId }: { userId?: string }) {
   const { count, notifications, refetch } = useNotifications(userId);
@@ -22,7 +23,7 @@ export default function NotificationBell({ userId }: { userId?: string }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleNotificationClick = async (notification: any) => {
+  const handleNotificationClick = async (notification: Notification) => {
     await supabase
       .from("notifications")
       .update({ is_read: true })

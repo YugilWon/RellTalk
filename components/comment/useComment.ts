@@ -51,11 +51,20 @@ export const useCreateComment = (
   return useMutation({
     mutationFn: (data: CreateCommentPayload) => createComment(data),
 
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      // 1. 최상위 댓글 목록 무효화
       queryClient.invalidateQueries({
         queryKey: ["comments", targetId, targetType],
         exact: false,
       });
+
+      // 2. 답글인 경우, 해당 부모의 답글 목록도 무효화
+      if (variables.parentId) {
+        queryClient.invalidateQueries({
+          queryKey: ["childComments", variables.parentId],
+          exact: false,
+        });
+      }
     },
   });
 };
