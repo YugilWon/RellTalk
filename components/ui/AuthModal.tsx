@@ -23,6 +23,7 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -32,13 +33,19 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
     };
   }, []);
 
+  useEffect(() => {
+    setError(null);
+  }, [mode]);
+
   if (!mounted) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null); // 새로운 시도 시 기존 에러 초기화
 
+    // 1. 프론트엔드 자체 유효성 검사
     if (mode === "signup" && password !== passwordConfirm) {
-      toast.error("비밀번호가 일치하지 않습니다.");
+      setError("비밀번호가 일치하지 않습니다.");
       return;
     }
 
@@ -54,14 +61,22 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
       }
 
       await signup({ email, password, nickname, avatar });
-      toast.success("회원가입이 완료되었습니다.");
+      toast.success("회원가입 완료!");
       onClose();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        toast.error(err.message);
+    } catch (err: any) {
+      const rawMessage = err.message || "";
+      let friendlyMessage = "처리에 실패했습니다.";
+
+      if (
+        rawMessage.includes("Invalid login credentials") ||
+        rawMessage.includes("invalid-credential")
+      ) {
+        friendlyMessage = "이메일 또는 비밀번호가 일치하지 않습니다.";
       } else {
-        toast.error("처리에 실패했습니다.");
+        friendlyMessage = rawMessage || friendlyMessage;
       }
+
+      setError(friendlyMessage);
     } finally {
       setLoading(false);
     }
@@ -107,6 +122,16 @@ const AuthModal = ({ onClose }: { onClose: () => void }) => {
         <h2 className="text-2xl font-bold text-center text-white mb-8 tracking-wide">
           {mode === "login" ? "로그인" : "회원가입"}
         </h2>
+
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-500 text-sm text-center"
+          >
+            {error}
+          </motion.div>
+        )}
 
         {mode === "login" ? (
           <LoginForm

@@ -112,6 +112,10 @@ export async function fetchChildComments({
   parentId: string;
   userId?: string;
 }) {
+  // 해당 부모 아래의 모든 답글(손자 포함)을 가져오기 위해 parent_id 필터링 대신
+  // 최상위 부모 ID를 추적할 수 있는 구조라면 좋겠지만,
+  // 현재 DB 구조에서는 1단계 아래만 가져오므로,
+  // 일단 해당 parentId를 가진 모든 자식을 가져옵니다.
   const { data, error } = await supabase
     .from("comments")
     .select(
@@ -137,6 +141,18 @@ export async function fetchChildComments({
   if (error) throw error;
 
   const commentIds = (data ?? []).map((c) => c.id);
+
+  // 각 답글들의 하위 답글 개수 확인
+  const { data: replyRows } = await supabase
+    .from("comments")
+    .select("parent_id")
+    .in("parent_id", commentIds);
+
+  const replyCountMap = new Map<string, number>();
+  replyRows?.forEach((row) => {
+    const prev = replyCountMap.get(row.parent_id) ?? 0;
+    replyCountMap.set(row.parent_id, prev + 1);
+  });
 
   const likes = await fetchLikes(commentIds, "comment");
 
@@ -170,7 +186,7 @@ export async function fetchChildComments({
       deleted: comment.deleted ?? false,
       likeCount: likeUsers.length,
       isLiked: userId ? likeUsers.includes(userId) : false,
-      replyCount: 0,
+      replyCount: replyCountMap.get(comment.id) ?? 0,
     };
   });
 }

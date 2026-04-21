@@ -79,8 +79,14 @@ export const useUpdateComment = (
     mutationFn: (data: UpdateCommentPayload) => updateComment(data),
 
     onSuccess: () => {
+      // 1. 최상위 댓글 목록 무효화
       queryClient.invalidateQueries({
         queryKey: ["comments", targetId, targetType],
+        exact: false,
+      });
+      // 2. 답글 목록도 모두 무효화하여 수정 내용 즉시 반영
+      queryClient.invalidateQueries({
+        queryKey: ["childComments"],
         exact: false,
       });
     },
@@ -96,8 +102,14 @@ export const useDeleteComment = (
   return useMutation<void, Error, string>({
     mutationFn: (id: string) => deleteComment(id),
     onSuccess: () => {
+      // 1. 최상위 댓글 목록 무효화
       queryClient.invalidateQueries({
         queryKey: ["comments", targetId, targetType],
+        exact: false,
+      });
+      // 2. 답글 목록도 무효화하여 삭제 상태 즉시 반영
+      queryClient.invalidateQueries({
+        queryKey: ["childComments"],
         exact: false,
       });
     },

@@ -1,21 +1,54 @@
 "use client";
 
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
-import { CommentCardProps, CommentWithLike } from "@/types/interface";
+import React, { useState, useCallback } from "react";
+import { CommentCardProps } from "@/types/interface";
 import EditMode from "./EidtMode";
 import ViewMode from "./ViewMode";
 import { useToggleLike, useLikeSummary } from "@/hooks/useLike";
 import CommentForm from "./CommentForm";
 import { useChildComments } from "./useComment";
-import { supabase } from "@/utils/supabase/client";
+import { useCommentScroll } from "@/hooks/useCommentScroll";
 
 type CommentCard = Omit<CommentCardProps, "likeMutation">;
+
+/**
+ * 답글 목록 렌더링 컴포넌트
+ */
+const ReplyList = React.memo(
+  ({
+    replies,
+    user,
+    updateMutation,
+    deleteMutation,
+    createMutation,
+    depth,
+  }: {
+    replies: any[];
+    user: any;
+    updateMutation: any;
+    deleteMutation: any;
+    createMutation: any;
+    depth: number;
+  }) => {
+    return (
+      <ul className="ml-8 border-l border-neutral-700 pl-4 space-y-2">
+        {replies.map((reply) => (
+          <CommentCard
+            key={reply.id}
+            comment={reply}
+            user={user}
+            updateMutation={updateMutation}
+            deleteMutation={deleteMutation}
+            createMutation={createMutation}
+            depth={depth + 1}
+          />
+        ))}
+      </ul>
+    );
+  },
+);
+
+ReplyList.displayName = "ReplyList";
 
 function CommentCard({
   comment,
@@ -23,51 +56,27 @@ function CommentCard({
   updateMutation,
   deleteMutation,
   createMutation,
-  isReply = false,
-}: CommentCard & { isReply?: boolean }) {
+  depth = 0,
+}: CommentCard & { depth?: number }) {
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(comment.content);
   const [replying, setReplying] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
 
-  const ref = useRef<HTMLLIElement>(null);
-
-  const targetHashRef = useRef<string | null>(null);
-  const initialOpenRef = useRef(false);
-
-  useEffect(() => {
-    if (targetHashRef.current === null && typeof window !== "undefined") {
-      targetHashRef.current = window.location.hash.replace("#comment-", "");
-    }
-  }, []);
-
-  const targetHash = targetHashRef.current;
-
-  const [targetParentId, setTargetParentId] = useState<string | null>(null);
-
-  // 알림 타겟이 답글인 경우, 그 부모가 누구인지 DB에서 확인
-  useEffect(() => {
-    if (!targetHash || isReply) return;
-
-    const checkParent = async () => {
-      const { data } = await supabase
-        .from("comments")
-        .select("parent_id")
-        .eq("id", targetHash)
-        .single();
-
-      if (data?.parent_id) {
-        setTargetParentId(data.parent_id);
-      }
-    };
-
-    checkParent();
-  }, [targetHash, isReply]);
-
   const { data: childComments = [] } = useChildComments(
     showReplies ? comment.id : null,
     user?.id,
   );
+
+  // 로직 추출: 스크롤 및 자동 열기
+  const { ref } = useCommentScroll({
+    commentId: comment.id,
+    isReply: depth > 0,
+    childComments,
+    showReplies,
+    setShowReplies,
+    replyCount: comment.replyCount,
+  });
 
   const { data: likeSummary } = useLikeSummary(comment.id, "comment", user?.id);
   const likeMutation = useToggleLike(comment.id, "comment", user?.id);
@@ -77,11 +86,8 @@ function CommentCard({
       alert("로그인이 필요합니다.");
       return;
     }
-
     likeMutation.mutate(likeSummary?.isLiked ?? false);
   }, [user, likeMutation, likeSummary?.isLiked]);
-
-  const isEdited = comment.updatedAt !== comment.createdAt;
 
   const handleReplyToggle = useCallback(() => {
     setReplying((prev) => !prev);
@@ -91,57 +97,36 @@ function CommentCard({
     setShowReplies((prev) => !prev);
   }, []);
 
-  const isTargetChild = useMemo(() => {
-    // 1. 이미 로드된 자식 중에 있거나
-    // 2. DB 확인 결과 이 부모가 타겟의 부모인 경우
-    return (
-      childComments.some((c) => c.id === targetHash) ||
-      targetParentId === comment.id
-    );
-  }, [childComments, targetHash, targetParentId, comment.id]);
+  const handleReplySubmit = useCallback(
+    (content: string) => {
+      if (!createMutation) return;
 
-  useEffect(() => {
-    if (!targetHash) return;
+      // 뎁스 2(손자)까지만 허용하고 그 이상은 손자 레벨에 고정
+      // depth 0(부모) -> depth 1(자식) 생성 (parentId = 부모id)
+      // depth 1(자식) -> depth 2(손자) 생성 (parentId = 자식id)
+      // depth 2(손자) -> depth 2(손자) 생성 (parentId = 현재손자의 부모id, 즉 자식id)
+      const finalParentId = depth >= 2 ? comment.parentId : comment.id;
 
-    const isTargetSelf = comment.id === targetHash;
+      createMutation.mutate({
+        targetId: comment.targetId,
+        targetType: comment.targetType,
+        content,
+        parentId: finalParentId,
+      });
+      setReplying(false);
+      setShowReplies(true);
+    },
+    [
+      depth,
+      comment.parentId,
+      comment.id,
+      comment.targetId,
+      comment.targetType,
+      createMutation,
+    ],
+  );
 
-    if (!initialOpenRef.current) {
-      // 알림을 통해 온 경우, 해당 댓글이 이 부모 댓글의 자식이거나 본인일 때만 답글 목록을 엽니다.
-      if (!showReplies && (isTargetSelf || isTargetChild)) {
-        setShowReplies(true);
-      }
-
-      // 만약 타겟 본인이라면 (부모 댓글일 때), 목록을 열 필요는 없지만
-      // initialOpenRef는 true로 설정하여 중복 실행 방지
-      if (isTargetSelf) {
-        initialOpenRef.current = true;
-      }
-
-      // 자식이 타겟이고 목록이 열렸다면 완료
-      if (isTargetChild && showReplies) {
-        initialOpenRef.current = true;
-      }
-    }
-
-    if (isTargetSelf || isTargetChild) {
-      setTimeout(() => {
-        ref.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-
-        ref.current?.classList.add("bg-indigo-50", "ring-2", "ring-indigo-300");
-
-        setTimeout(() => {
-          ref.current?.classList.remove(
-            "bg-indigo-50",
-            "ring-2",
-            "ring-indigo-300",
-          );
-        }, 2000);
-      }, 100);
-    }
-  }, [targetHash, comment.id, showReplies, comment.replyCount, isTargetChild]);
+  const isEdited = comment.updatedAt !== comment.createdAt;
 
   return (
     <li
@@ -180,30 +165,14 @@ function CommentCard({
             placeholder="답글을 입력하세요"
             autoFocus
             initialValue={`@${comment.nickname} `}
-            onSubmit={(content) => {
-              if (!createMutation) return;
-
-              // 2단계 고정을 위해, 현재 댓글이 이미 답글(parentId 존재)이라면
-              // 그 부모의 ID를 parentId로 사용합니다.
-              const finalParentId = comment.parentId || comment.id;
-
-              createMutation.mutate({
-                targetId: comment.targetId,
-                targetType: comment.targetType,
-                content,
-                parentId: finalParentId,
-              });
-
-              setReplying(false);
-              setShowReplies(true);
-            }}
+            onSubmit={handleReplySubmit}
           />
         </div>
       )}
 
-      {!isReply && comment.replyCount > 0 && (
+      {comment.replyCount > 0 && (
         <button
-          className="text-sm text-gray-400 hover:text-white ml-2 text-left"
+          className="text-sm text-gray-400 hover:text-white ml-2 text-left w-fit transition-colors"
           onClick={toggleReplies}
         >
           {showReplies
@@ -212,20 +181,15 @@ function CommentCard({
         </button>
       )}
 
-      {!isReply && showReplies && childComments.length > 0 && (
-        <ul className="ml-8 border-l border-neutral-700 pl-4 space-y-2">
-          {childComments.map((reply) => (
-            <CommentCard
-              key={reply.id}
-              comment={reply}
-              user={user}
-              updateMutation={updateMutation}
-              deleteMutation={deleteMutation}
-              createMutation={createMutation}
-              isReply={true}
-            />
-          ))}
-        </ul>
+      {depth < 2 && showReplies && childComments.length > 0 && (
+        <ReplyList
+          replies={childComments}
+          user={user}
+          updateMutation={updateMutation}
+          deleteMutation={deleteMutation}
+          createMutation={createMutation}
+          depth={depth}
+        />
       )}
     </li>
   );

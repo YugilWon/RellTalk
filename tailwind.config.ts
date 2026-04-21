@@ -17,12 +17,13 @@ const config: Config = {
         width: "width",
         margin: "margin",
       },
+      scale: {
+        "200": "2",
+        "300": "3",
+      },
     },
   },
-  scale: {
-    "200": "2",
-    "300": "3",
-  },
+
   plugins: [],
 };
 export default config;
