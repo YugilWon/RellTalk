@@ -31,6 +31,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
         transition-transform duration-200 ease-out
         hover:scale-105 hover:z-30
         group
+        bg-neutral-800
       "
     >
       <Link href={`/detail/${movie.id}`} prefetch>
@@ -39,6 +40,8 @@ const MovieCard: React.FC<MovieCardProps> = ({
           alt={movie.title}
           width={500}
           height={281}
+          placeholder="blur"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F9PQAI8AKpT8U9TwAAAABJRU5ErkJggg=="
           className="w-full h-48 object-cover transition-all duration-300 group-hover:scale-105 group-hover:blur-[1px]"
           onError={() => setImageError?.(movie.id)}
         />
