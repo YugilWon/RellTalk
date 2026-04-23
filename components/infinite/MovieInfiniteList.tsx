@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Movie } from "@/types/interface";
 import MovieCard from "../movie/MovieCard";
 import MovieCardSkeleton from "../movie/MovieCardSkeleton";
@@ -16,59 +17,41 @@ export default function MovieInfiniteList({
   apiPath,
   title,
 }: MovieInfiniteListProps) {
-  const [movies, setMovies] = useState<Movie[]>(initialMovies);
-  const [page, setPage] = useState(initialMovies.length ? 2 : 1);
-  const [more, setMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const observerRef = useRef<HTMLDivElement | null>(null);
 
-  const [imageError, setImageError] = useState<Record<number, boolean>>({});
-
-  const handleImageError = useCallback((id: number) => {
-    setImageError((prev) => {
-      if (prev[id]) return prev;
-      return { ...prev, [id]: true };
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["movies", apiPath],
+      queryFn: async ({ pageParam = 1 }) => {
+        const res = await fetch(`${apiPath}?page=${pageParam}`);
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = allPages.length + 1;
+        return lastPage.results && lastPage.results.length > 0
+          ? nextPage
+          : undefined;
+      },
+      initialData:
+        initialMovies.length > 0
+          ? {
+              pages: [{ results: initialMovies }],
+              pageParams: [1],
+            }
+          : undefined,
+      staleTime: 1000 * 60 * 5, // 5분간 데이터 유지 (캐싱 효과)
     });
-  }, []);
+
+  const allMovies = data?.pages.flatMap((page) => page.results) || [];
 
   useEffect(() => {
-    if (page === 1 && initialMovies.length > 0) return;
-    if (!more) return;
-
-    const fetchMovies = async () => {
-      setIsLoading(true);
-      try {
-        const res = await fetch(`${apiPath}?page=${page}`);
-        const data = await res.json();
-
-        if (!data.results || data.results.length === 0) {
-          setMore(false);
-          return;
-        }
-
-        setMovies((prev) => {
-          const newMovies = data.results.filter(
-            (movie: Movie) => !prev.some((p) => p.id === movie.id),
-          );
-          return [...prev, ...newMovies];
-        });
-      } catch (err) {
-        console.error("영화 데이터 fetch 실패:", err);
-        setMore(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMovies();
-  }, [page, apiPath, initialMovies, more]);
-
-  useEffect(() => {
-    if (!more) return;
+    if (!hasNextPage || isFetchingNextPage) return;
 
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        setPage((prev) => prev + 1);
+        fetchNextPage();
       }
     });
 
@@ -78,24 +61,19 @@ export default function MovieInfiniteList({
     return () => {
       if (current) observer.unobserve(current);
     };
-  }, [more]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <section className="mt-16">
       <h2 className="text-2xl font-bold mb-6 text-white">{title}</h2>
 
       <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 list-none">
-        {movies.map((movie) => (
-          <MovieCard
-            key={movie.id}
-            movie={movie}
-            imageError={imageError[movie.id]}
-            setImageError={handleImageError}
-          />
+        {allMovies.map((movie: Movie) => (
+          <MovieCard key={movie.id} movie={movie} />
         ))}
       </ul>
 
-      {(more || isLoading) && (
+      {(hasNextPage || isFetchingNextPage || isLoading) && (
         <div ref={observerRef} className="mt-6">
           <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 list-none">
             {Array.from({ length: 5 }).map((_, i) => (

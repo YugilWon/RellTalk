@@ -12,7 +12,15 @@ export async function GET(
   try {
     const movies = await getMoviesByGenre(genreId, page);
 
-    return NextResponse.json({ results: movies });
+    const response = NextResponse.json({ results: movies });
+
+    // 브라우저 캐싱 추가 (1시간 동안 공유 캐시 유지)
+    response.headers.set(
+      "Cache-Control",
+      "public, s-maxage=3600, stale-while-revalidate=59",
+    );
+
+    return response;
   } catch (err) {
     return NextResponse.json({ results: [] }, { status: 500 });
   }
